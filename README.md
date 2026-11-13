@@ -28,7 +28,7 @@ commit id. STOCK is on the unstable branch of the Valkey project.
 | STOCK | 2a23bcda0 | unstable branch of the Valkey project | The unmodified server, unstable branch, 2026-10-19 |
 | S1 | 927094894 | [northstar/s1](https://github.com/valkey-rainfall/valkey/tree/northstar/s1) | The original revision of the proof of concept |
 | PRE-C | c8b06eb0f | [commit](https://github.com/valkey-rainfall/valkey/commit/c8b06eb0f) | The revision just before C (C without its own 13 commits) |
-| CFIX, CFIX-N6 | d7bf1a4cd, 77e034db8 | [branch pr/consolidated-fixes](https://github.com/valkey-rainfall/valkey/tree/pr/consolidated-fixes) | Two commits of the fixes branch on top of C (31 commits, not merged) |
+| CFIX, CFIX-N6 | d7bf1a4cd, 77e034db8 | [branch pr/consolidated-fixes](https://github.com/valkey-rainfall/valkey/tree/pr/consolidated-fixes) | Two commits of the fixes branch on top of C (32 commits, the last one comment-only; not merged) |
 | SEQ | 59674df38 | [northstar/seq](https://github.com/valkey-rainfall/valkey/tree/northstar/seq) | The PR-ready port of the seqlock design (concurrent reads with validation) |
 | ORIG | not published | - | The original build of the seqlock design; its commit is not on a public branch, so P23 cites it by label only |
 | P9, FIX, PROBE | 91dbb9c3, f65f429e, e82fc7da | [P9](https://github.com/valkey-rainfall/valkey/commit/91dbb9c3), [FIX](https://github.com/valkey-rainfall/valkey/commit/f65f429e), [PROBE base](https://github.com/valkey-rainfall/valkey/commit/e82fc7da) | Test builds on S1 used in the replication runs (S1 plus some fixes of design doc section 9) |
