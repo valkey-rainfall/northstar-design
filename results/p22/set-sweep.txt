@@ -1,0 +1,56 @@
+per task:
+  P22SET-io1-R1 C 2026.11.09_22.00.25.231214 mean 1.630 reps 1.66 1.64 1.64 1.59 1.62 spread 4.1% err 0.0 util 0.023 sat False load1 50.89 foreign None mem start/after 191.3/186.4
+  P22SET-io1-R1 STOCK 2026.11.09_22.00.27.386839 mean 1.786 reps 1.79 1.82 1.75 1.80 1.78 spread 3.7% err 0.0 util 0.024 sat False load1 1.02 foreign None mem start/after 190.7/186.3
+  P22SET-io2-R1 C 2026.11.09_22.00.29.636774 mean 1.936 reps 1.95 1.94 1.95 1.92 1.92 spread 1.7% err 0.0 util 0.022 sat False load1 0.92 foreign None mem start/after 243.9/194.6
+  P22SET-io2-R1 STOCK 2026.11.09_22.00.31.724089 mean 2.594 reps 2.63 2.60 2.60 2.58 2.57 spread 2.4% err 0.0 util 0.026 sat False load1 1.79 foreign 0.02 mem start/after 199.0/187.2
+  P22SET-io4-R1 C 2026.11.09_22.00.33.701970 mean 2.865 reps 2.87 2.87 2.84 2.88 2.87 spread 1.2% err 0.0 util 0.029 sat False load1 1.9 foreign 0.02 mem start/after 248.7/199.4
+  P22SET-io4-R1 STOCK 2026.11.09_22.00.35.667869 mean 2.611 reps 2.61 2.63 2.59 2.61 2.61 spread 1.7% err 0.0 util 0.026 sat False load1 2.63 foreign 0.015 mem start/after 199.3/187.3
+  P22SET-io8-R1 C 2026.11.09_22.00.37.629472 mean 6.838 reps 6.82 6.82 6.83 6.91 6.81 spread 1.4% err 0.0 util 0.053 sat False load1 2.69 foreign 0.03 mem start/after 257.2/207.9
+  P22SET-io8-R1 STOCK 2026.11.09_22.00.39.571851 mean 2.568 reps 2.56 2.59 2.56 2.54 2.59 spread 2.1% err 0.0 util 0.025 sat False load1 6.26 foreign 0.025 mem start/after 208.3/187.5
+  P22SET-io16-R1 C 2026.11.09_22.00.41.549792 mean 14.119 reps 14.13 14.08 14.13 14.09 14.16 spread 0.5% err 0.0 util 0.1 sat False load1 1.84 foreign 0.005 mem start/after 275.8/226.5
+  P22SET-io16-R1 STOCK 2026.11.09_22.00.43.505876 mean 2.544 reps 2.55 2.51 2.55 2.56 2.54 spread 2.3% err 0.0 util 0.024 sat False load1 13.41 foreign 0.015 mem start/after 203.5/187.9
+  P22SET-io32-R1 C 2026.11.09_22.00.45.476568 mean 26.198 reps 26.22 26.22 26.23 26.15 26.18 spread 0.3% err 0.0 util 0.163 sat False load1 1.91 foreign 0.015 mem start/after 313.2/263.9
+  P22SET-io32-R1 STOCK 2026.11.09_22.00.47.467277 mean 2.509 reps 2.54 2.50 2.48 2.52 2.51 spread 2.5% err 0.0 util 0.024 sat False load1 27.2 foreign 0.025 mem start/after 206.2/188.8
+  P22SET-io48-R1 C 2026.11.09_22.00.49.416543 mean 36.813 reps 36.85 36.83 36.90 36.85 36.64 spread 0.7% err 0.0 util 0.216 sat False load1 1.79 foreign 0.01 mem start/after 350.2/300.9
+  P22SET-io48-R1 STOCK 2026.11.09_22.00.51.368332 mean 2.489 reps 2.51 2.50 2.50 2.47 2.46 spread 1.9% err 0.0 util 0.023 sat False load1 38.54 foreign 0.01 mem start/after 201.6/189.6
+  P22SET-io62-R1 C 2026.11.09_22.00.53.264527 mean 43.365 reps 43.45 43.46 43.33 43.28 43.30 spread 0.4% err 0.0 util 0.254 sat False load1 2.0 foreign 0.005 mem start/after 383.4/334.1
+  P22SET-io62-R1 STOCK 2026.11.09_22.00.55.218470 mean 2.479 reps 2.48 2.50 2.49 2.46 2.46 spread 1.5% err 0.0 util 0.024 sat False load1 44.89 foreign 0.015 mem start/after 207.9/190.3
+  P22SET-io1-R2 STOCK 2026.11.09_22.00.57.171224 mean 1.770 reps 1.76 1.76 1.79 1.79 1.75 spread 2.0% err 0.0 util 0.023 sat False load1 1.96 foreign 0.01 mem start/after 190.7/186.3
+  P22SET-io1-R2 C 2026.11.09_22.00.59.026914 mean 1.621 reps 1.60 1.63 1.60 1.63 1.65 spread 3.1% err 0.0 util 0.022 sat False load1 0.91 foreign 0.015 mem start/after 191.3/186.4
+  P22SET-io2-R2 STOCK 2026.11.09_22.01.00.922151 mean 2.584 reps 2.56 2.63 2.58 2.56 2.59 spread 2.7% err 0.0 util 0.025 sat False load1 0.93 foreign 0.02 mem start/after 204.0/187.1
+  P22SET-io2-R2 C 2026.11.09_22.01.02.881235 mean 1.942 reps 1.94 1.97 1.93 1.92 1.95 spread 2.8% err 0.0 util 0.022 sat False load1 1.82 foreign 0.015 mem start/after 243.9/194.7
+  P22SET-io4-R2 STOCK 2026.11.09_22.01.04.786863 mean 2.602 reps 2.63 2.60 2.57 2.60 2.61 spread 2.6% err 0.0 util 0.026 sat False load1 1.62 foreign 0.005 mem start/after 199.4/187.2
+  P22SET-io4-R2 C 2026.11.09_22.01.06.687723 mean 2.882 reps 2.86 2.86 2.89 2.94 2.87 spread 2.9% err 0.0 util 0.029 sat False load1 3.31 foreign 0.01 mem start/after 248.7/199.4
+  P22SET-io8-R2 STOCK 2026.11.09_22.01.08.565366 mean 2.571 reps 2.54 2.58 2.58 2.59 2.56 spread 2.0% err 0.0 util 0.025 sat False load1 2.7 foreign 0.01 mem start/after 199.6/187.5
+  P22SET-io8-R2 C 2026.11.09_22.01.10.496814 mean 6.795 reps 6.77 6.84 6.81 6.82 6.75 spread 1.3% err 0.0 util 0.053 sat False load1 4.27 foreign 0.015 mem start/after 257.2/207.9
+  P22SET-io16-R2 STOCK 2026.11.09_22.01.12.409399 mean 2.536 reps 2.55 2.50 2.53 2.56 2.55 spread 2.1% err 0.0 util 0.023 sat False load1 6.41 foreign 0.015 mem start/after 203.6/187.9
+  P22SET-io16-R2 C 2026.11.09_22.01.14.256520 mean 14.135 reps 14.14 14.10 14.13 14.12 14.18 spread 0.5% err 0.0 util 0.102 sat False load1 1.81 foreign 0.01 mem start/after 275.7/226.5
+  P22SET-io32-R2 STOCK 2026.11.09_22.01.16.196506 mean 2.505 reps 2.52 2.50 2.53 2.47 2.51 spread 2.2% err 0.0 util 0.024 sat False load1 13.6 foreign 0.015 mem start/after 208.7/188.7
+  P22SET-io32-R2 C 2026.11.09_22.01.18.146715 mean 26.167 reps 26.18 26.20 26.17 26.16 26.13 spread 0.2% err 0.0 util 0.163 sat False load1 1.81 foreign 0.02 mem start/after 313.2/263.9
+  P22SET-io48-R2 STOCK 2026.11.09_22.01.20.091709 mean 2.490 reps 2.47 2.52 2.49 2.48 2.50 spread 2.0% err 0.0 util 0.025 sat False load1 27.14 foreign 0.005 mem start/after 201.7/189.6
+  P22SET-io48-R2 C 2026.11.09_22.01.22.002244 mean 36.752 reps 36.75 36.83 36.68 36.74 36.76 spread 0.4% err 0.0 util 0.214 sat False load1 1.81 foreign 0.045 mem start/after 350.2/300.9
+  P22SET-io62-R2 STOCK 2026.11.09_22.01.23.923911 mean 2.452 reps 2.45 2.46 2.45 2.46 2.44 spread 0.9% err 0.0 util 0.024 sat False load1 41.27 foreign 0.015 mem start/after 206.9/190.3
+  P22SET-io62-R2 C 2026.11.09_22.01.25.915732 mean 43.423 reps 43.60 43.33 43.39 43.32 43.48 spread 0.7% err 0.0 util 0.253 sat False load1 1.92 foreign 0.01 mem start/after 383.4/334.1
+  P22SET-io48-R3 C 2026.11.09_22.01.27.844104 mean 36.841 reps 36.89 36.87 36.86 36.77 36.81 spread 0.3% err 0.0 util 0.214 sat False load1 47.31 foreign 0.015 mem start/after 350.2/300.9
+  P22SET-io48-R3 STOCK 2026.11.09_22.01.29.799406 mean 2.494 reps 2.48 2.50 2.53 2.46 2.51 spread 3.0% err 0.0 util 0.026 sat False load1 39.77 foreign 0.02 mem start/after 204.5/189.6
+  P22SET-io62-R3 STOCK 2026.11.09_22.01.31.743335 mean 2.462 reps 2.48 2.46 2.47 2.44 2.47 spread 1.9% err 0.0 util 0.024 sat False load1 1.88 foreign 0.005 mem start/after 202.4/190.3
+  P22SET-io62-R3 C 2026.11.09_22.01.33.739970 mean 43.348 reps 43.30 43.35 43.32 43.33 43.45 spread 0.3% err 0.0 util 0.253 sat False load1 1.87 foreign 0.015 mem start/after 383.4/334.2
+
+| io-threads | C task means | C mean | C sd | STOCK task means | STOCK mean | STOCK sd | C vs STOCK | C / STOCK |
+|---:|---|---:|---:|---|---:|---:|---:|---:|
+| 1 | 1.630 1.621 | 1.625 | 0.006 | 1.786 1.770 | 1.778 | 0.011 | -8.6% | 0.91x |
+| 2 | 1.936 1.942 | 1.939 | 0.004 | 2.594 2.584 | 2.589 | 0.007 | -25.1% | 0.75x |
+| 4 | 2.865 2.882 | 2.874 | 0.012 | 2.611 2.602 | 2.607 | 0.006 | +10.2% | 1.10x |
+| 8 | 6.838 6.795 | 6.817 | 0.030 | 2.568 2.571 | 2.570 | 0.002 | +165.3% | 2.65x |
+| 16 | 14.119 14.135 | 14.127 | 0.011 | 2.544 2.536 | 2.540 | 0.006 | +456.2% | 5.56x |
+| 32 | 26.198 26.167 | 26.183 | 0.022 | 2.509 2.505 | 2.507 | 0.003 | +944.5% | 10.44x |
+| 48 | 36.813 36.752 36.841 | 36.802 | 0.045 | 2.489 2.490 2.494 | 2.491 | 0.003 | +1377.1% | 14.77x |
+| 62 | 43.365 43.423 43.348 | 43.378 | 0.039 | 2.479 2.452 2.462 | 2.465 | 0.014 | +1660.1% | 17.60x |
+
+quality: tasks 36, reps per task [5], max err 0.0, saturated any False, client util C 0.022-0.254, STOCK 0.023-0.026
+largest rep spread: [('P22SET-io1-R1', 'C', 4.1), ('P22SET-io1-R1', 'STOCK', 3.7), ('P22SET-io1-R2', 'C', 3.1), ('P22SET-io48-R3', 'STOCK', 3.0), ('P22SET-io4-R2', 'C', 2.9)]
+task means more than 3% from their point mean: []
+foreign_cpu_cores (newer runner version, n=33): 0.005-0.045; load_1m: 0.91-50.89
+used_memory after window C: io1 186.4 MB, io62 334.1 MB
+used_memory after window STOCK: io1 186.3 MB, io62 190.3 MB
+used_memory flat in window (start >= after) in every task: True

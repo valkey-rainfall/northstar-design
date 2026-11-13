@@ -1,0 +1,61 @@
+[ RUN      ] FastpathListsTest.CommandGateRefusesStateChangingCommands
+test_fastpath_lists.cpp:159: Failure
+Expected equality of these values:
+  cmd->flags & ((1ULL << 8) | (1ULL << 4) | (1ULL << 5) | (1ULL << 6) | (1ULL << 24))
+    Which is: 256
+--
+
+test_fastpath_lists.cpp:161: Failure
+Expected equality of these values:
+  cmd->acl_categories & ((1ULL << 16) | (1ULL << 13) | (1ULL << 12) | (1ULL << 19) | (1ULL << 20) | (1ULL << 18))
+    Which is: 65536
+--
+
+test_fastpath_lists.cpp:159: Failure
+Expected equality of these values:
+  cmd->flags & ((1ULL << 8) | (1ULL << 4) | (1ULL << 5) | (1ULL << 6) | (1ULL << 24))
+    Which is: 256
+--
+
+test_fastpath_lists.cpp:161: Failure
+Expected equality of these values:
+  cmd->acl_categories & ((1ULL << 16) | (1ULL << 13) | (1ULL << 12) | (1ULL << 19) | (1ULL << 20) | (1ULL << 18))
+    Which is: 65536
+--
+
+test_fastpath_lists.cpp:159: Failure
+Expected equality of these values:
+  cmd->flags & ((1ULL << 8) | (1ULL << 4) | (1ULL << 5) | (1ULL << 6) | (1ULL << 24))
+    Which is: 256
+--
+
+test_fastpath_lists.cpp:161: Failure
+Expected equality of these values:
+  cmd->acl_categories & ((1ULL << 16) | (1ULL << 13) | (1ULL << 12) | (1ULL << 19) | (1ULL << 20) | (1ULL << 18))
+    Which is: 65536
+--
+
+test_fastpath_lists.cpp:159: Failure
+Expected equality of these values:
+  cmd->flags & ((1ULL << 8) | (1ULL << 4) | (1ULL << 5) | (1ULL << 6) | (1ULL << 24))
+    Which is: 256
+--
+
+test_fastpath_lists.cpp:161: Failure
+Expected equality of these values:
+  cmd->acl_categories & ((1ULL << 16) | (1ULL << 13) | (1ULL << 12) | (1ULL << 19) | (1ULL << 20) | (1ULL << 18))
+    Which is: 65536
+--
+
+test_fastpath_lists.cpp:159: Failure
+Expected equality of these values:
+  cmd->flags & ((1ULL << 8) | (1ULL << 4) | (1ULL << 5) | (1ULL << 6) | (1ULL << 24))
+    Which is: 256
+--
+
+test_fastpath_lists.cpp:161: Failure
+Expected equality of these values:
+  cmd->acl_categories & ((1ULL << 16) | (1ULL << 13) | (1ULL << 12) | (1ULL << 19) | (1ULL << 20) | (1ULL << 18))
+    Which is: 65536
+--
+failures: 31

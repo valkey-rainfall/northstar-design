@@ -1,0 +1,28 @@
+Cleanup: may take some time... OK
+Starting test server at port 21079
+[ready]: 3158648
+Testing unit/staged-loop-lanes
+
+Logged crash report (pid 3158653):
+=== VALKEY BUG REPORT START: Cut & paste starting from here ===
+3158653:M 09 Nov 2026 23:07:30.057 # === ASSERTION FAILED ===
+3158653:M 09 Nov 2026 23:07:30.057 # ==> server.c:4962 '!fastpathWindowOpen() || c->flag.executor || c->flag.reexecuting_command' is not true
+
+------ STACK TRACE ------
+
+...
+9:3158653:M 09 Nov 2026 23:07:30.057 # ==> server.c:4962 '!fastpathWindowOpen() || c->flag.executor || c->flag.reexecuting_command' is not true
+--- main thread stack ---
+3158653 valkey-server *
+(processCommand+0x9ee)[0x46caae]
+(processCommandAndResetClient+0x20)[0x586780]
+[0x58c9aa]
+(readQueryFromClient+0x1c6)[0x58d106]
+[0x602b31]
+(aeProcessEvents+0x186)[0x4788e6]
+(stagedMain+0x501)[0x536b31]
+(main+0x68c)[0x469bdc]
+(_start+0x25)[0x46dc85]
+(phaseBarrierAwaitPhase+0x1c1)[0x532981]
+[0x522b24]
+executable:$WORK/wt-pc/src/valkey-server

@@ -1,0 +1,1 @@
+case ep2-tls: clients 8 rounds 200 differences 0; {'fastpath_batches': '4331', 'fastpath_clients': '9', 'fastpath_speculated': '0', 'fastpath_writes': '11201', 'staged_epoll_thread': '1', 'staged_iterations': '2240', 'staged_main_lane': '1'}

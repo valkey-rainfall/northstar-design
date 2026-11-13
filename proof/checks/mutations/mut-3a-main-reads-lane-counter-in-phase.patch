@@ -1,0 +1,39 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 3439d0b85..88fb050c8 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -2559,6 +2559,13 @@ void fastpathStagedWriteLane(int tid) {
+     ectx = saved;
+ }
+ 
++/* MUTATION m3a: main peeks at the lanes' counters while the phase is open. */
++long long fastpathMutationPeekLanes(void) {
++    long long sum = 0;
++    for (int l = 0; l < fp_nlanes; l++) sum += fp_lanes[l].executed;
++    return sum;
++}
++
+ /* Main, after a write or apply phase: the position in command order of a lane record. A write-phase
+  * entry is ordered by the segment part it belongs to, then by its place in its IO thread's batches; a
+  * split entry's part by the entry it belongs to. */
+diff --git a/src/staged_loop.c b/src/staged_loop.c
+index 864ce5b49..f8515b156 100644
+--- a/src/staged_loop.c
++++ b/src/staged_loop.c
+@@ -893,6 +893,7 @@ void stagedRunApplyPhase(int with_workers) {
+     stagedRunLanePhase(STAGED_PHASE_APPLY, with_workers);
+ }
+ 
++static long long sl_mutation_sink; /* MUTATION m3a */
+ void stagedRunWritePhase(void) {
+     if (sl_inline_lanes) {
+         /* Unit tests: no worker is enrolled; run every lane here, lane by lane. */
+@@ -905,6 +906,8 @@ void stagedRunWritePhase(void) {
+     serverAssert(rc == 0);
+     sl_opens++;
+     if (sl_main_lane) fastpathStagedWriteLane(0);
++    extern long long fastpathMutationPeekLanes(void);
++    sl_mutation_sink += fastpathMutationPeekLanes(); /* MUTATION m3a: before the barrier closes */
+     phaseBarrierWaitAllDone(&sl_barrier, sl_main_spins);
+     stagedAccountPhase(STAGED_PHASE_WRITE, sl_workers);
+ }

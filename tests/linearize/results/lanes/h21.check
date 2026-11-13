@@ -1,0 +1,2 @@
+ops=106323 objects=12 checked_ops=191564 max_front=8 mgets=14666 account_reads=9589 transfers=11698 replica_reads=0 resp_errors=1720
+VERDICT PASS

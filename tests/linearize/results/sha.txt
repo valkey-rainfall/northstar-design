@@ -1,0 +1,8 @@
+HEAD under test: origin/audit/issue29-counter-recheck = 1fb18b7d25e043f1a94794eeb9957d75a7becf9f
+S1 pin-s1 = 92709489481acf0e12ac0008cdacbff376c9293f
+remote: https://github.com/valkey-rainfall/valkey.git
+worktree HEAD: 1fb18b7d25e043f1a94794eeb9957d75a7becf9f
+mutated worktree base: 1fb18b7d25e043f1a94794eeb9957d75a7becf9f plus mutation-reverse-lane-order.patch
+gcc: gcc (GCC) 11.5.0 20240719 (Red Hat 11.5.0-5)
+python: Python 3.9.25
+host cores: 16

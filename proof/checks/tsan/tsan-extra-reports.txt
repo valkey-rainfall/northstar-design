@@ -1,0 +1,1387 @@
+==================
+WARNING: ThreadSanitizer: data race (pid=3237413)
+  Read of size 1 at 0x7b08000122a0 by main thread (mutexes: write M18):
+    #0 objectGetType src/object.c:58 (valkey-server+0x524597)
+    #1 fastGetReplySismember src/fastget.c:399 (valkey-server+0x524597)
+    #2 fastGetReplyFromEntry src/fastget.c:470 (valkey-server+0x524597)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x524597)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #11 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #12 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #13 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #14 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #15 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Previous atomic write of size 4 at 0x7b08000122a0 by thread T7:
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouchLfu src/fastget.c:372 (valkey-server+0x45bf3c)
+    #2 fastGetTouch src/fastget.c:381 (valkey-server+0x45c006)
+    #3 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x45c006)
+    #4 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x45c006)
+    #5 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #6 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #7 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #8 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #9 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #10 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #11 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #12 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Location is heap block of size 30 at 0x7b08000122a0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createEmbeddedStringObjectWithKeyAndExpire src/object.c:307 (valkey-server+0x63e65e)
+    #4 tryPrebuildStringEntry src/object.c:416 (valkey-server+0x63f26d)
+    #5 tryPrebuildStringEntry src/object.c:400 (valkey-server+0x63f26d)
+    #6 prebuildArgvEntry src/server.c:4865 (valkey-server+0x6efb83)
+    #7 prepareCommandGeneric.part.0.lto_priv.0 src/server.c:4906 (valkey-server+0x6efb83)
+    #8 prepareCommandGeneric src/server.c:4889 (valkey-server+0x6d66a5)
+    #9 prepareCommand src/server.c:4919 (valkey-server+0x6d66a5)
+    #10 prepareCommandQueue src/server.c:4930 (valkey-server+0x6d66a5)
+    #11 fpRead src/fastpath.c:1060 (valkey-server+0x584e68)
+    #12 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #13 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #14 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #15 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #16 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #17 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #18 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #19 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #20 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T7 'io_thd_1' (tid=3237422, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race src/object.c:58 in objectGetType
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3237413)
+  Read of size 1 at 0x7b0800012520 by thread T9:
+    #0 objectGetType src/object.c:58 (valkey-server+0x524597)
+    #1 fastGetReplySismember src/fastget.c:399 (valkey-server+0x524597)
+    #2 fastGetReplyFromEntry src/fastget.c:470 (valkey-server+0x524597)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x524597)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #11 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Previous atomic write of size 4 at 0x7b0800012520 by main thread (mutexes: write M18):
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouchLfu src/fastget.c:372 (valkey-server+0x45bf3c)
+    #2 fastGetTouch src/fastget.c:381 (valkey-server+0x45c006)
+    #3 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x45c006)
+    #4 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x45c006)
+    #5 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #6 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #7 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #8 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #9 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #10 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #11 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #12 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #13 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #14 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #15 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #16 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Location is heap block of size 30 at 0x7b0800012520 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createEmbeddedStringObjectWithKeyAndExpire src/object.c:307 (valkey-server+0x63e65e)
+    #4 tryPrebuildStringEntry src/object.c:416 (valkey-server+0x63f26d)
+    #5 tryPrebuildStringEntry src/object.c:400 (valkey-server+0x63f26d)
+    #6 prebuildArgvEntry src/server.c:4865 (valkey-server+0x6efb83)
+    #7 prepareCommandGeneric.part.0.lto_priv.0 src/server.c:4906 (valkey-server+0x6efb83)
+    #8 prepareCommandGeneric src/server.c:4889 (valkey-server+0x6d66a5)
+    #9 prepareCommand src/server.c:4919 (valkey-server+0x6d66a5)
+    #10 prepareCommandQueue src/server.c:4930 (valkey-server+0x6d66a5)
+    #11 fpRead src/fastpath.c:1060 (valkey-server+0x584e68)
+    #12 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #13 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #14 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #15 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #16 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #17 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #18 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #19 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #20 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T9 'io_thd_3' (tid=3237424, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race src/object.c:58 in objectGetType
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3237413)
+  Atomic write of size 4 at 0x7b080001d0c0 by thread T8:
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouchLfu src/fastget.c:372 (valkey-server+0x45bf3c)
+    #2 fastGetTouch src/fastget.c:381 (valkey-server+0x45c006)
+    #3 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x45c006)
+    #4 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x45c006)
+    #5 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #6 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #7 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #8 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #9 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #10 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #11 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #12 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Previous read of size 1 at 0x7b080001d0c0 by thread T9:
+    #0 objectGetType src/object.c:58 (valkey-server+0x524597)
+    #1 fastGetReplySismember src/fastget.c:399 (valkey-server+0x524597)
+    #2 fastGetReplyFromEntry src/fastget.c:470 (valkey-server+0x524597)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x524597)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #11 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Location is heap block of size 30 at 0x7b080001d0c0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createEmbeddedStringObjectWithKeyAndExpire src/object.c:307 (valkey-server+0x63e65e)
+    #4 tryPrebuildStringEntry src/object.c:416 (valkey-server+0x63f26d)
+    #5 tryPrebuildStringEntry src/object.c:400 (valkey-server+0x63f26d)
+    #6 prebuildArgvEntry src/server.c:4865 (valkey-server+0x6efb83)
+    #7 prepareCommandGeneric.part.0.lto_priv.0 src/server.c:4906 (valkey-server+0x6efb83)
+    #8 prepareCommandGeneric src/server.c:4889 (valkey-server+0x6d66a5)
+    #9 prepareCommand src/server.c:4919 (valkey-server+0x6d66a5)
+    #10 prepareCommandQueue src/server.c:4930 (valkey-server+0x6d66a5)
+    #11 fpRead src/fastpath.c:1060 (valkey-server+0x584e68)
+    #12 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #13 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #14 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #15 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #16 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #17 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #18 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #19 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #20 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Thread T8 'io_thd_2' (tid=3237423, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+  Thread T9 'io_thd_3' (tid=3237424, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race (libtsan.so.0+0x816d0) in __tsan_atomic32_compare_exchange_strong
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3237413)
+  Atomic write of size 4 at 0x7b080001bd40 by thread T9:
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouchLfu src/fastget.c:372 (valkey-server+0x45bf3c)
+    #2 fastGetTouch src/fastget.c:381 (valkey-server+0x45c006)
+    #3 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x45c006)
+    #4 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x45c006)
+    #5 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #6 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #7 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #8 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #9 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #10 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #11 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #12 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Previous read of size 1 at 0x7b080001bd40 by thread T7:
+    #0 objectGetEncoding src/object.c:66 (valkey-server+0x63c340)
+    #1 objectGetVal src/object.c:437 (valkey-server+0x63c340)
+    #2 fastGetReplyFromEntry src/fastget.c:482 (valkey-server+0x5245eb)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x5245eb)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #11 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Location is heap block of size 30 at 0x7b080001bd40 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createEmbeddedStringObjectWithKeyAndExpire src/object.c:307 (valkey-server+0x63e65e)
+    #4 tryPrebuildStringEntry src/object.c:416 (valkey-server+0x63f26d)
+    #5 tryPrebuildStringEntry src/object.c:400 (valkey-server+0x63f26d)
+    #6 prebuildArgvEntry src/server.c:4865 (valkey-server+0x6efb83)
+    #7 prepareCommandGeneric.part.0.lto_priv.0 src/server.c:4906 (valkey-server+0x6efb83)
+    #8 prepareCommandGeneric src/server.c:4889 (valkey-server+0x6d66a5)
+    #9 prepareCommand src/server.c:4919 (valkey-server+0x6d66a5)
+    #10 prepareCommandQueue src/server.c:4930 (valkey-server+0x6d66a5)
+    #11 fpRead src/fastpath.c:1060 (valkey-server+0x584e68)
+    #12 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #13 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #14 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #15 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #16 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #17 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #18 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #19 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #20 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Thread T9 'io_thd_3' (tid=3237424, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+  Thread T7 'io_thd_1' (tid=3237422, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race (libtsan.so.0+0x816d0) in __tsan_atomic32_compare_exchange_strong
+==================
+ThreadSanitizer: reported 4 warnings
+==================
+WARNING: ThreadSanitizer: data race (pid=3238017)
+  Read of size 1 at 0x7b0800008de0 by thread T7:
+    #0 objectGetType src/object.c:58 (valkey-server+0x524597)
+    #1 fastGetReplySismember src/fastget.c:399 (valkey-server+0x524597)
+    #2 fastGetReplyFromEntry src/fastget.c:470 (valkey-server+0x524597)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x524597)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #11 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Previous atomic write of size 4 at 0x7b0800008de0 by main thread (mutexes: write M18):
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouch src/fastget.c:388 (valkey-server+0x52405e)
+    #2 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x52405e)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x52405e)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #11 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #12 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #13 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #14 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #15 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Location is heap block of size 23 at 0x7b0800008de0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createEmbeddedStringObjectWithKeyAndExpire src/object.c:307 (valkey-server+0x63e65e)
+    #4 tryPrebuildStringEntry src/object.c:416 (valkey-server+0x63f26d)
+    #5 tryPrebuildStringEntry src/object.c:400 (valkey-server+0x63f26d)
+    #6 prebuildArgvEntry src/server.c:4865 (valkey-server+0x6efb83)
+    #7 prepareCommandGeneric.part.0.lto_priv.0 src/server.c:4906 (valkey-server+0x6efb83)
+    #8 prepareCommandGeneric src/server.c:4889 (valkey-server+0x6d66a5)
+    #9 prepareCommand src/server.c:4919 (valkey-server+0x6d66a5)
+    #10 prepareCommandQueue src/server.c:4930 (valkey-server+0x6d66a5)
+    #11 fpRead src/fastpath.c:1060 (valkey-server+0x584e68)
+    #12 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #13 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #14 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #15 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #16 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #17 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #18 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #19 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #20 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T7 'io_thd_1' (tid=3238026, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race src/object.c:58 in objectGetType
+==================
+ThreadSanitizer: reported 1 warnings
+==================
+WARNING: ThreadSanitizer: data race (pid=3238630)
+  Read of size 8 at 0x7b3400000140 by main thread (mutexes: write M18):
+    #0 bgIteratorGetStatus src/bgiteration.c:2128 (valkey-server+0x496dd3)
+    #1 forkless_catInfo src/forkless.c:396 (valkey-server+0x54d655)
+    #2 genValkeyInfoString src/server.c:7205 (valkey-server+0x6e27b7)
+    #3 infoCommand src/server.c:7676 (valkey-server+0x6e6a60)
+    #4 infoCommand src/server.c:7668 (valkey-server+0x6e6a60)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #9 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #10 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #11 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #12 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #13 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #14 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #15 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #16 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #17 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Previous write of size 8 at 0x7b3400000140 by thread T10:
+    #0 returnCurrentItemToMainThread src/bgiteration.c:883 (valkey-server+0x48529b)
+    #1 bgIteratorRead src/bgiteration.c:2182 (valkey-server+0x49b65a)
+    #2 forklessSaveProcessor src/forkless.c:80 (valkey-server+0x54c19f)
+
+  Location is heap block of size 208 at 0x7b34000000d0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 bgIteratorCreate src/bgiteration.c:2020 (valkey-server+0x49c642)
+    #4 bgIteratorCreateFullScanIter src/bgiteration.c:2091 (valkey-server+0x49c642)
+    #5 forklessSaveToDisk src/forkless.c:337 (valkey-server+0x54e13d)
+    #6 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #7 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #8 call src/server.c:4524 (valkey-server+0x461e8b)
+    #9 call src/server.c:4445 (valkey-server+0x461e8b)
+    #10 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #11 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #12 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #13 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #14 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #15 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #16 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #17 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T10 (tid=3238768, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 startBackgroundThread src/forkless.c:292 (valkey-server+0x54e259)
+    #2 forklessSaveToDisk src/forkless.c:348 (valkey-server+0x54e259)
+    #3 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #4 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #9 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #10 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #11 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #12 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #13 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #14 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #15 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #16 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/bgiteration.c:2128 in bgIteratorGetStatus
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3238630)
+  Read of size 8 at 0x7b3400000198 by main thread (mutexes: write M18):
+    #0 bgIteratorGetStatus src/bgiteration.c:2143 (valkey-server+0x496fc8)
+    #1 forkless_catInfo src/forkless.c:396 (valkey-server+0x54d655)
+    #2 genValkeyInfoString src/server.c:7205 (valkey-server+0x6e27b7)
+    #3 infoCommand src/server.c:7676 (valkey-server+0x6e6a60)
+    #4 infoCommand src/server.c:7668 (valkey-server+0x6e6a60)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #9 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #10 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #11 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #12 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #13 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #14 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #15 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #16 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #17 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Previous write of size 8 at 0x7b3400000198 by thread T10:
+    #0 bgIteratorRead src/bgiteration.c:2195 (valkey-server+0x49b5eb)
+    #1 forklessSaveProcessor src/forkless.c:80 (valkey-server+0x54c19f)
+
+  Location is heap block of size 208 at 0x7b34000000d0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 bgIteratorCreate src/bgiteration.c:2020 (valkey-server+0x49c642)
+    #4 bgIteratorCreateFullScanIter src/bgiteration.c:2091 (valkey-server+0x49c642)
+    #5 forklessSaveToDisk src/forkless.c:337 (valkey-server+0x54e13d)
+    #6 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #7 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #8 call src/server.c:4524 (valkey-server+0x461e8b)
+    #9 call src/server.c:4445 (valkey-server+0x461e8b)
+    #10 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #11 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #12 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #13 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #14 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #15 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #16 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #17 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T10 (tid=3238768, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 startBackgroundThread src/forkless.c:292 (valkey-server+0x54e259)
+    #2 forklessSaveToDisk src/forkless.c:348 (valkey-server+0x54e259)
+    #3 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #4 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #9 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #10 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #11 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #12 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #13 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #14 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #15 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #16 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/bgiteration.c:2143 in bgIteratorGetStatus
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3238630)
+  Read of size 1 at 0x7b0c005371e0 by thread T8:
+    #0 objectGetType src/object.c:58 (valkey-server+0x524597)
+    #1 fastGetReplySismember src/fastget.c:399 (valkey-server+0x524597)
+    #2 fastGetReplyFromEntry src/fastget.c:470 (valkey-server+0x524597)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x524597)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #11 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Previous atomic write of size 4 at 0x7b0c005371e0 by main thread (mutexes: write M18):
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouchLfu src/fastget.c:372 (valkey-server+0x45bf3c)
+    #2 fastGetTouch src/fastget.c:381 (valkey-server+0x45c006)
+    #3 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x45c006)
+    #4 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x45c006)
+    #5 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #6 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #7 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #8 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #9 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #10 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #11 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #12 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #13 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #14 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #15 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #16 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Location is heap block of size 38 at 0x7b0c005371e0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createUnembeddedObjectWithKeyAndExpire src/object.c:202 (valkey-server+0x63e268)
+    #4 createStringObjectWithKeyAndExpire src/object.c:395 (valkey-server+0x63ee70)
+    #5 objectSetKeyAndExpire src/object.c:532 (valkey-server+0x64175a)
+    #6 dbAddInternal src/db.c:228 (valkey-server+0x50ce05)
+    #7 dbAdd src/db.c:242 (valkey-server+0x5119cf)
+    #8 setKey src/db.c:480 (valkey-server+0x5119cf)
+    #9 setGenericCommand src/t_string.c:158 (valkey-server+0x737e49)
+    #10 setCommand src/t_string.c:280 (valkey-server+0x7386db)
+    #11 call src/server.c:4524 (valkey-server+0x461e8b)
+    #12 call src/server.c:4445 (valkey-server+0x461e8b)
+    #13 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #14 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #15 fpExecute src/fastpath.c:1539 (valkey-server+0x58e6cc)
+    #16 fpStreamExecRun src/fastpath.c:3171 (valkey-server+0x5977cd)
+    #17 fastpathStagedExecuteStreaming src/fastpath.c:3295 (valkey-server+0x5977cd)
+    #18 writePhase src/staged_loop.c:711 (valkey-server+0x5ad16a)
+    #19 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad16a)
+    #20 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad16a)
+    #21 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T8 'io_thd_2' (tid=3238640, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race src/object.c:58 in objectGetType
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3238630)
+  Read of size 1 at 0x7b0c008bf890 by main thread (mutexes: write M18):
+    #0 objectGetType src/object.c:58 (valkey-server+0x524597)
+    #1 fastGetReplySismember src/fastget.c:399 (valkey-server+0x524597)
+    #2 fastGetReplyFromEntry src/fastget.c:470 (valkey-server+0x524597)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x524597)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 stagedOpenAndWait src/staged_loop.c:278 (valkey-server+0x5a1d0e)
+    #11 stagedRunPhase src/staged_loop.c:266 (valkey-server+0x5acdd6)
+    #12 readPhase src/staged_loop.c:678 (valkey-server+0x5acdd6)
+    #13 stagedLoopIteration src/staged_loop.c:769 (valkey-server+0x5acdd6)
+    #14 stagedMain src/staged_loop.c:803 (valkey-server+0x5acdd6)
+    #15 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Previous atomic write of size 4 at 0x7b0c008bf890 by thread T7:
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouchLfu src/fastget.c:372 (valkey-server+0x45bf3c)
+    #2 fastGetTouch src/fastget.c:381 (valkey-server+0x45c006)
+    #3 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x45c006)
+    #4 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x45c006)
+    #5 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #6 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #7 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #8 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #9 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #10 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #11 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #12 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Location is heap block of size 38 at 0x7b0c008bf890 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createUnembeddedObjectWithKeyAndExpire src/object.c:202 (valkey-server+0x63e268)
+    #4 createStringObjectWithKeyAndExpire src/object.c:395 (valkey-server+0x63ee70)
+    #5 objectSetKeyAndExpire src/object.c:532 (valkey-server+0x64175a)
+    #6 dbAddInternal src/db.c:228 (valkey-server+0x50ce05)
+    #7 dbAdd src/db.c:242 (valkey-server+0x5119cf)
+    #8 setKey src/db.c:480 (valkey-server+0x5119cf)
+    #9 setGenericCommand src/t_string.c:158 (valkey-server+0x737e49)
+    #10 setCommand src/t_string.c:280 (valkey-server+0x7386db)
+    #11 call src/server.c:4524 (valkey-server+0x461e8b)
+    #12 call src/server.c:4445 (valkey-server+0x461e8b)
+    #13 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #14 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #15 fpExecute src/fastpath.c:1539 (valkey-server+0x58e6cc)
+    #16 fpStreamExecRun src/fastpath.c:3171 (valkey-server+0x5977cd)
+    #17 fastpathStagedExecuteStreaming src/fastpath.c:3295 (valkey-server+0x5977cd)
+    #18 writePhase src/staged_loop.c:711 (valkey-server+0x5ad16a)
+    #19 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad16a)
+    #20 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad16a)
+    #21 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T7 'io_thd_1' (tid=3238639, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race src/object.c:58 in objectGetType
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3238630)
+  Read of size 1 at 0x7b0c00605f70 by thread T7:
+    #0 objectGetType src/object.c:58 (valkey-server+0x524597)
+    #1 fastGetReplySismember src/fastget.c:399 (valkey-server+0x524597)
+    #2 fastGetReplyFromEntry src/fastget.c:470 (valkey-server+0x524597)
+    #3 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x524597)
+    #4 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #5 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #6 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #7 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #8 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #9 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #10 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #11 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Previous atomic write of size 4 at 0x7b0c00605f70 by thread T9:
+    #0 __tsan_atomic32_compare_exchange_strong <null> (libtsan.so.0+0x816d0)
+    #1 fastGetTouchLfu src/fastget.c:372 (valkey-server+0x45bf3c)
+    #2 fastGetTouch src/fastget.c:381 (valkey-server+0x45c006)
+    #3 fastGetReplyFromEntry src/fastget.c:499 (valkey-server+0x45c006)
+    #4 fastGetSpeculateBatch src/fastget.c:757 (valkey-server+0x45c006)
+    #5 fastGetSpeculateBatch src/fastget.c:781 (valkey-server+0x5251aa)
+    #6 fpSpeculate src/fastpath.c:993 (valkey-server+0x58593c)
+    #7 fpRead src/fastpath.c:1061 (valkey-server+0x58593c)
+    #8 fastpathStagedEvent src/fastpath.c:1912 (valkey-server+0x58ba58)
+    #9 fpClaimBatched src/fastpath.c:1934 (valkey-server+0x587fef)
+    #10 fastpathStagedReadPhase src/fastpath.c:1954 (valkey-server+0x58a328)
+    #11 ioThreadStagedLoop src/io_threads.c:1373 (valkey-server+0x57dd8a)
+    #12 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57dd8a)
+
+  Location is heap block of size 38 at 0x7b0c00605f70 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771f23)
+    #2 zmalloc_usable src/zmalloc.c:275 (valkey-server+0x771f23)
+    #3 createUnembeddedObjectWithKeyAndExpire src/object.c:202 (valkey-server+0x63e268)
+    #4 createStringObjectWithKeyAndExpire src/object.c:395 (valkey-server+0x63ee70)
+    #5 objectSetKeyAndExpire src/object.c:532 (valkey-server+0x64175a)
+    #6 dbAddInternal src/db.c:228 (valkey-server+0x50ce05)
+    #7 dbAdd src/db.c:242 (valkey-server+0x5119cf)
+    #8 setKey src/db.c:480 (valkey-server+0x5119cf)
+    #9 setGenericCommand src/t_string.c:158 (valkey-server+0x737e49)
+    #10 setCommand src/t_string.c:280 (valkey-server+0x7386db)
+    #11 call src/server.c:4524 (valkey-server+0x461e8b)
+    #12 call src/server.c:4445 (valkey-server+0x461e8b)
+    #13 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #14 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #15 fpExecute src/fastpath.c:1539 (valkey-server+0x58e6cc)
+    #16 fpStreamExecRun src/fastpath.c:3171 (valkey-server+0x5977cd)
+    #17 fastpathStagedExecuteStreaming src/fastpath.c:3295 (valkey-server+0x5977cd)
+    #18 writePhase src/staged_loop.c:711 (valkey-server+0x5ad16a)
+    #19 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad16a)
+    #20 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad16a)
+    #21 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Thread T7 'io_thd_1' (tid=3238639, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+  Thread T9 'io_thd_3' (tid=3238641, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580cb8)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1872)
+    #4 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race src/object.c:58 in objectGetType
+==================
+ThreadSanitizer: reported 5 warnings
+==================
+WARNING: ThreadSanitizer: data race (pid=3239453)
+  Read of size 8 at 0x7b3400000198 by main thread (mutexes: write M18):
+    #0 bgIteratorGetStatus src/bgiteration.c:2143 (valkey-server+0x496fc8)
+    #1 forkless_catInfo src/forkless.c:396 (valkey-server+0x54d655)
+    #2 genValkeyInfoString src/server.c:7205 (valkey-server+0x6e27b7)
+    #3 infoCommand src/server.c:7676 (valkey-server+0x6e6a60)
+    #4 infoCommand src/server.c:7668 (valkey-server+0x6e6a60)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #9 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #10 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #11 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #12 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #13 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #14 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #15 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #16 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #17 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Previous write of size 8 at 0x7b3400000198 by thread T10:
+    #0 bgIteratorRead src/bgiteration.c:2195 (valkey-server+0x49b5eb)
+    #1 forklessSaveProcessor src/forkless.c:80 (valkey-server+0x54c19f)
+
+  Location is heap block of size 208 at 0x7b34000000d0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 bgIteratorCreate src/bgiteration.c:2020 (valkey-server+0x49c642)
+    #4 bgIteratorCreateFullScanIter src/bgiteration.c:2091 (valkey-server+0x49c642)
+    #5 forklessSaveToDisk src/forkless.c:337 (valkey-server+0x54e13d)
+    #6 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #7 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #8 call src/server.c:4524 (valkey-server+0x461e8b)
+    #9 call src/server.c:4445 (valkey-server+0x461e8b)
+    #10 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #11 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #12 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #13 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #14 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #15 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #16 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #17 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T10 (tid=3239473, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 startBackgroundThread src/forkless.c:292 (valkey-server+0x54e259)
+    #2 forklessSaveToDisk src/forkless.c:348 (valkey-server+0x54e259)
+    #3 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #4 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #9 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #10 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #11 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #12 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #13 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #14 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #15 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #16 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/bgiteration.c:2143 in bgIteratorGetStatus
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3239453)
+  Write of size 4 at 0x0000009296cc by main thread (mutexes: write M18):
+    #0 setNumericType src/config.c:2189 (valkey-server+0x503b94)
+    #1 numericConfigSet src/config.c:2363 (valkey-server+0x50447a)
+    #2 performInterfaceSet src/config.c:813 (valkey-server+0x4ee346)
+    #3 configSetCommand src/config.c:1020 (valkey-server+0x4fa44b)
+    #4 call src/server.c:4524 (valkey-server+0x461e8b)
+    #5 call src/server.c:4445 (valkey-server+0x461e8b)
+    #6 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #7 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #8 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #9 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #10 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #11 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #12 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #13 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #14 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #15 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #16 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #17 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #18 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Previous read of size 4 at 0x0000009296cc by thread T10:
+    #0 rdbSaveKeyValuePair src/rdb.c:1365 (valkey-server+0x666448)
+    #1 forklessSaveProcessor src/forkless.c:101 (valkey-server+0x54c712)
+
+  Location is global 'server' of size 7280 at 0x000000928380 (valkey-server+0x0000009296cc)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T10 (tid=3239473, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 startBackgroundThread src/forkless.c:292 (valkey-server+0x54e259)
+    #2 forklessSaveToDisk src/forkless.c:348 (valkey-server+0x54e259)
+    #3 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #4 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #9 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #10 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #11 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #12 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #13 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #14 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #15 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #16 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/config.c:2189 in setNumericType
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3239453)
+  Write of size 8 at 0x7b3400000140 by thread T10:
+    #0 returnCurrentItemToMainThread src/bgiteration.c:883 (valkey-server+0x48529b)
+    #1 bgIteratorRead src/bgiteration.c:2182 (valkey-server+0x49b65a)
+    #2 forklessSaveProcessor src/forkless.c:80 (valkey-server+0x54c19f)
+
+  Previous read of size 8 at 0x7b3400000140 by main thread (mutexes: write M18):
+    #0 bgIteratorGetStatus src/bgiteration.c:2128 (valkey-server+0x496dd3)
+    #1 forkless_catInfo src/forkless.c:396 (valkey-server+0x54d655)
+    #2 genValkeyInfoString src/server.c:7205 (valkey-server+0x6e27b7)
+    #3 infoCommand src/server.c:7676 (valkey-server+0x6e6a60)
+    #4 infoCommand src/server.c:7668 (valkey-server+0x6e6a60)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #9 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #10 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #11 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #12 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #13 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #14 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #15 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #16 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #17 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  As if synchronized via sleep:
+    #0 usleep <null> (libtsan.so.0+0x617c9)
+    #1 debugDelay src/debug.c:2758 (valkey-server+0x6667c1)
+    #2 rdbSaveKeyValuePair src/rdb.c:1365 (valkey-server+0x6667c1)
+    #3 forklessSaveProcessor src/forkless.c:101 (valkey-server+0x54c712)
+
+  Location is heap block of size 208 at 0x7b34000000d0 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 bgIteratorCreate src/bgiteration.c:2020 (valkey-server+0x49c642)
+    #4 bgIteratorCreateFullScanIter src/bgiteration.c:2091 (valkey-server+0x49c642)
+    #5 forklessSaveToDisk src/forkless.c:337 (valkey-server+0x54e13d)
+    #6 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #7 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #8 call src/server.c:4524 (valkey-server+0x461e8b)
+    #9 call src/server.c:4445 (valkey-server+0x461e8b)
+    #10 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #11 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #12 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #13 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #14 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #15 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #16 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #17 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T10 (tid=3239473, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 startBackgroundThread src/forkless.c:292 (valkey-server+0x54e259)
+    #2 forklessSaveToDisk src/forkless.c:348 (valkey-server+0x54e259)
+    #3 forklessSaveToDisk src/forkless.c:305 (valkey-server+0x54e5df)
+    #4 bgsaveCommand src/rdb.c:4574 (valkey-server+0x6755a0)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x628bde)
+    #9 processPendingCommandAndInputBuffer src/networking.c:4652 (valkey-server+0x62e0ba)
+    #10 fastpathHandoffDone src/fastpath.c:1763 (valkey-server+0x5907e2)
+    #11 fpStagedHandoff src/fastpath.c:3399 (valkey-server+0x590e9b)
+    #12 fastpathStagedFinish src/fastpath.c:3426 (valkey-server+0x590e9b)
+    #13 replyPhase src/staged_loop.c:751 (valkey-server+0x5ad770)
+    #14 stagedLoopIteration src/staged_loop.c:788 (valkey-server+0x5ad770)
+    #15 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad770)
+    #16 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/bgiteration.c:883 in returnCurrentItemToMainThread
+==================
+ThreadSanitizer: reported 3 warnings
+==================
+WARNING: ThreadSanitizer: lock-order-inversion (potential deadlock) (pid=3240293)
+  Cycle in lock order graph: M18 (0x000000a1eec0) => M14355223822723208 (0x000000000000) => M18
+
+  Mutex M14355223822723208 acquired here while holding mutex M18 in main thread:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 createIOThread src/io_threads.c:1559 (valkey-server+0x57fdf8)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 ioThreadsConverge src/io_threads.c:1769 (valkey-server+0x460fd2)
+    #4 beforeSleep src/server.c:2323 (valkey-server+0x460fd2)
+    #5 aeProcessEvents.constprop.0.isra.0 src/ae.c:576 (valkey-server+0x7a00f5)
+    #6 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #7 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 previously acquired by the same thread here:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleAcquireGIL src/module.c:9544 (valkey-server+0x6c95e1)
+    #2 afterSleep src/server.c:2362 (valkey-server+0x6c95e1)
+    #3 aeProcessEvents.constprop.0.isra.0 src/ae.c:608 (valkey-server+0x7a012f)
+    #4 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #5 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 acquired here while holding mutex M14355223822723208 in main thread:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleAcquireGIL src/module.c:9544 (valkey-server+0x6c95e1)
+    #2 afterSleep src/server.c:2362 (valkey-server+0x6c95e1)
+    #3 aeProcessEvents.constprop.0.isra.0 src/ae.c:608 (valkey-server+0x7a012f)
+    #4 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #5 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M14355223822723208 previously acquired by the same thread here:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 createIOThread src/io_threads.c:1559 (valkey-server+0x57fdf8)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 ioThreadsConverge src/io_threads.c:1769 (valkey-server+0x460fd2)
+    #4 beforeSleep src/server.c:2323 (valkey-server+0x460fd2)
+    #5 aeProcessEvents.constprop.0.isra.0 src/ae.c:576 (valkey-server+0x7a00f5)
+    #6 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #7 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: lock-order-inversion (potential deadlock) (libtsan.so.0+0x506fa) in pthread_mutex_lock
+==================
+ThreadSanitizer: reported 1 warnings
+==================
+WARNING: ThreadSanitizer: data race (pid=3240424)
+  Write of size 4 at 0x7b3000000380 by main thread (mutexes: write M18):
+    #0 aeSetDontWait src/ae.c:141 (valkey-server+0x460e57)
+    #1 beforeSleep src/server.c:2317 (valkey-server+0x460e57)
+    #2 aeProcessEvents.constprop.0.isra.0 src/ae.c:576 (valkey-server+0x7a00f5)
+    #3 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #4 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Previous read of size 4 at 0x7b3000000380 by thread T11:
+    #0 aePoll src/ae.c:446 (valkey-server+0x47bd6e)
+    #1 ioThreadPoll src/io_threads.c:1170 (valkey-server+0x57d6a1)
+    #2 processTaggedSPMCJob src/io_threads.c:1297 (valkey-server+0x57d6a1)
+    #3 ioThreadDrainInboxes src/io_threads.c:1348 (valkey-server+0x57d6a1)
+    #4 IOThreadMain src/io_threads.c:1480 (valkey-server+0x57da85)
+
+  Location is heap block of size 184 at 0x7b3000000300 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 aeCreateEventLoop src/ae.c:88 (valkey-server+0x4827fa)
+    #4 initServer src/server.c:3393 (valkey-server+0x6d0174)
+    #5 main src/server.c:8601 (valkey-server+0x45e56d)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T11 'io_thd_2' (tid=3240444, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 updateIOThreads src/io_threads.c:1799 (valkey-server+0x580996)
+    #4 applyIOThreads src/config.c:3034 (valkey-server+0x507e35)
+    #5 configSetCommand src/config.c:1049 (valkey-server+0x4faecd)
+    #6 call src/server.c:4524 (valkey-server+0x461e8b)
+    #7 call src/server.c:4445 (valkey-server+0x461e8b)
+    #8 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #9 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #10 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #11 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #12 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #13 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #14 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #15 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #16 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #17 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #18 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/ae.c:141 in aeSetDontWait
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3240424)
+  Read of size 1 at 0x7b5c00001681 by thread T12:
+    #0 readToQueryBuf src/networking.c:5005 (valkey-server+0x6381c0)
+    #1 ioThreadReadQueryFromClient src/networking.c:7761 (valkey-server+0x6381c0)
+    #2 processTaggedSPMCJob src/io_threads.c:1284 (valkey-server+0x57d751)
+    #3 ioThreadDrainInboxes src/io_threads.c:1348 (valkey-server+0x57d751)
+    #4 IOThreadMain src/io_threads.c:1480 (valkey-server+0x57da85)
+
+  Previous write of size 8 at 0x7b5c00001680 by main thread (mutexes: write M18):
+    #0 sendReadToIOThreads src/io_threads.c:1976 (valkey-server+0x57b215)
+    #1 sendReadToIOThreads src/io_threads.c:1933 (valkey-server+0x57b215)
+    #2 trySendReadToIOThreads src/io_threads.c:1926 (valkey-server+0x6378f0)
+    #3 postponeClientRead src/networking.c:7526 (valkey-server+0x6378f0)
+    #4 postponeClientRead src/networking.c:7517 (valkey-server+0x6378f0)
+    #5 readQueryFromClient src/networking.c:5144 (valkey-server+0x6378f0)
+    #6 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #7 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #8 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #9 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #10 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #11 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Location is heap block of size 808 at 0x7b5c00001500 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 createClient src/networking.c:376 (valkey-server+0x613e96)
+    #4 acceptCommonHandler src/networking.c:2222 (valkey-server+0x6254c7)
+    #5 connSocketAcceptHandler src/socket.c:350 (valkey-server+0x6f05fb)
+    #6 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #7 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #8 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #9 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #10 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #11 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T12 'io_thd_3' (tid=3240445, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 updateIOThreads src/io_threads.c:1799 (valkey-server+0x580996)
+    #4 applyIOThreads src/config.c:3034 (valkey-server+0x507e35)
+    #5 configSetCommand src/config.c:1049 (valkey-server+0x4faecd)
+    #6 call src/server.c:4524 (valkey-server+0x461e8b)
+    #7 call src/server.c:4445 (valkey-server+0x461e8b)
+    #8 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #9 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #10 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #11 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #12 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #13 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #14 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #15 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #16 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #17 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #18 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/networking.c:5005 in readToQueryBuf
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3240424)
+  Write of size 2 at 0x7b1000002054 by thread T12:
+    #0 connSetPostponeUpdateState src/connection.h:581 (valkey-server+0x62c680)
+    #1 parseInputBuffer src/networking.c:4684 (valkey-server+0x62c680)
+    #2 ioThreadReadQueryFromClient src/networking.c:7783 (valkey-server+0x6384af)
+    #3 processTaggedSPMCJob src/io_threads.c:1284 (valkey-server+0x57d751)
+    #4 ioThreadDrainInboxes src/io_threads.c:1348 (valkey-server+0x57d751)
+    #5 IOThreadMain src/io_threads.c:1480 (valkey-server+0x57da85)
+
+  Previous read of size 2 at 0x7b1000002054 by main thread (mutexes: write M18):
+    #0 connSocketEventHandler src/socket.c:311 (valkey-server+0x6ebc2e)
+    #1 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #2 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #3 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #4 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Location is heap block of size 64 at 0x7b1000002040 allocated by main thread:
+    #0 calloc <null> (libtsan.so.0+0x32c0e)
+    #1 ztrycalloc_usable_internal src/zmalloc.c:289 (valkey-server+0x77233f)
+    #2 valkey_calloc src/zmalloc.c:332 (valkey-server+0x77233f)
+    #3 connCreateSocket src/socket.c:83 (valkey-server+0x6f05a1)
+    #4 connCreateAcceptedSocket src/socket.c:103 (valkey-server+0x6f05a1)
+    #5 connSocketAcceptHandler src/socket.c:350 (valkey-server+0x6f05a1)
+    #6 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #7 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #8 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #9 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #10 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #11 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T12 'io_thd_3' (tid=3240445, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 updateIOThreads src/io_threads.c:1799 (valkey-server+0x580996)
+    #4 applyIOThreads src/config.c:3034 (valkey-server+0x507e35)
+    #5 configSetCommand src/config.c:1049 (valkey-server+0x4faecd)
+    #6 call src/server.c:4524 (valkey-server+0x461e8b)
+    #7 call src/server.c:4445 (valkey-server+0x461e8b)
+    #8 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #9 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #10 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #11 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #12 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #13 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #14 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #15 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #16 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #17 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #18 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/connection.h:581 in connSetPostponeUpdateState
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3240424)
+  Read of size 1 at 0x7b5c00001688 by thread T12:
+    #0 ioThreadReadQueryFromClient src/networking.c:7810 (valkey-server+0x6382c9)
+    #1 processTaggedSPMCJob src/io_threads.c:1284 (valkey-server+0x57d751)
+    #2 ioThreadDrainInboxes src/io_threads.c:1348 (valkey-server+0x57d751)
+    #3 IOThreadMain src/io_threads.c:1480 (valkey-server+0x57da85)
+
+  Previous write of size 8 at 0x7b5c00001688 by main thread:
+    [failed to restore the stack]
+
+  Location is heap block of size 808 at 0x7b5c00001500 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 createClient src/networking.c:376 (valkey-server+0x613e96)
+    #4 acceptCommonHandler src/networking.c:2222 (valkey-server+0x6254c7)
+    #5 connSocketAcceptHandler src/socket.c:350 (valkey-server+0x6f05fb)
+    #6 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #7 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #8 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #9 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #10 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #11 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Thread T12 'io_thd_3' (tid=3240445, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 updateIOThreads src/io_threads.c:1799 (valkey-server+0x580996)
+    #4 applyIOThreads src/config.c:3034 (valkey-server+0x507e35)
+    #5 configSetCommand src/config.c:1049 (valkey-server+0x4faecd)
+    #6 call src/server.c:4524 (valkey-server+0x461e8b)
+    #7 call src/server.c:4445 (valkey-server+0x461e8b)
+    #8 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #9 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #10 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #11 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #12 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #13 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #14 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #15 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #16 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #17 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #18 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/networking.c:7810 in ioThreadReadQueryFromClient
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=3240424)
+  Write of size 1 at 0x7b5c0000169a by thread T10:
+    #0 ioThreadReadQueryFromClient src/networking.c:7807 (valkey-server+0x638281)
+    #1 processTaggedSPMCJob src/io_threads.c:1284 (valkey-server+0x57d751)
+    #2 ioThreadDrainInboxes src/io_threads.c:1348 (valkey-server+0x57d751)
+    #3 IOThreadMain src/io_threads.c:1480 (valkey-server+0x57da85)
+
+  Previous read of size 1 at 0x7b5c0000169a by main thread (mutexes: write M18):
+    #0 sendReadToIOThreads src/io_threads.c:1937 (valkey-server+0x57ae27)
+    #1 trySendReadToIOThreads src/io_threads.c:1926 (valkey-server+0x6378f0)
+    #2 postponeClientRead src/networking.c:7526 (valkey-server+0x6378f0)
+    #3 postponeClientRead src/networking.c:7517 (valkey-server+0x6378f0)
+    #4 readQueryFromClient src/networking.c:5144 (valkey-server+0x6378f0)
+    #5 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #6 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #7 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #8 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #9 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #10 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Location is heap block of size 808 at 0x7b5c00001500 allocated by main thread:
+    #0 malloc <null> (libtsan.so.0+0x329e9)
+    #1 ztrymalloc_usable_internal src/zmalloc.c:179 (valkey-server+0x771afa)
+    #2 valkey_malloc src/zmalloc.c:208 (valkey-server+0x771afa)
+    #3 createClient src/networking.c:376 (valkey-server+0x613e96)
+    #4 acceptCommonHandler src/networking.c:2222 (valkey-server+0x6254c7)
+    #5 connSocketAcceptHandler src/socket.c:350 (valkey-server+0x6f05fb)
+    #6 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #7 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #8 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #9 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #10 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #11 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Thread T10 'io_thd_1' (tid=3240443, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fed7)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 updateIOThreads src/io_threads.c:1799 (valkey-server+0x580996)
+    #4 applyIOThreads src/config.c:3034 (valkey-server+0x507e35)
+    #5 configSetCommand src/config.c:1049 (valkey-server+0x4faecd)
+    #6 call src/server.c:4524 (valkey-server+0x461e8b)
+    #7 call src/server.c:4445 (valkey-server+0x461e8b)
+    #8 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #9 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #10 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #11 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #12 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #13 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #14 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #15 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #16 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #17 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #18 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: data race src/networking.c:7807 in ioThreadReadQueryFromClient
+==================
+==================
+WARNING: ThreadSanitizer: lock-order-inversion (potential deadlock) (pid=3240424)
+  Cycle in lock order graph: M18 (0x000000a1eec0) => M14355223822723208 (0x000000000000) => M18
+
+  Mutex M14355223822723208 acquired here while holding mutex M18 in main thread:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 createIOThread src/io_threads.c:1559 (valkey-server+0x57fdf8)
+    #2 ioThreadsConvergeOnce src/io_threads.c:1753 (valkey-server+0x5803d9)
+    #3 updateIOThreads src/io_threads.c:1799 (valkey-server+0x580996)
+    #4 applyIOThreads src/config.c:3034 (valkey-server+0x507e35)
+    #5 configSetCommand src/config.c:1049 (valkey-server+0x4faecd)
+    #6 call src/server.c:4524 (valkey-server+0x461e8b)
+    #7 call src/server.c:4445 (valkey-server+0x461e8b)
+    #8 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #9 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #10 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #11 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #12 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #13 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #14 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #15 aeFireFileEvent src/ae.c:481 (valkey-server+0x7a02e9)
+    #16 aeProcessEvents.constprop.0.isra.0 src/ae.c:621 (valkey-server+0x7a02e9)
+    #17 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #18 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 previously acquired by the same thread here:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleAcquireGIL src/module.c:9544 (valkey-server+0x6c95e1)
+    #2 afterSleep src/server.c:2362 (valkey-server+0x6c95e1)
+    #3 aeProcessEvents.constprop.0.isra.0 src/ae.c:608 (valkey-server+0x7a012f)
+    #4 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #5 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M18 acquired here while holding mutex M14355223822723208 in main thread:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleAcquireGIL src/module.c:9544 (valkey-server+0x6c95e1)
+    #2 afterSleep src/server.c:2362 (valkey-server+0x6c95e1)
+    #3 aeProcessEvents.constprop.0.isra.0 src/ae.c:608 (valkey-server+0x7a012f)
+    #4 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #5 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Mutex M14355223822723208 previously acquired by the same thread here:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 ioWorkerPark src/io_threads.c:195 (valkey-server+0x57712f)
+    #2 IOThreadsBeforeSleep src/io_threads.c:1045 (valkey-server+0x57712f)
+    #3 beforeSleep src/server.c:2324 (valkey-server+0x460fda)
+    #4 aeProcessEvents.constprop.0.isra.0 src/ae.c:576 (valkey-server+0x7a00f5)
+    #5 stagedMain src/staged_loop.c:805 (valkey-server+0x5ad3d7)
+    #6 main src/server.c:8684 (valkey-server+0x45e784)
+
+SUMMARY: ThreadSanitizer: lock-order-inversion (potential deadlock) (libtsan.so.0+0x506fa) in pthread_mutex_lock
+==================
+ThreadSanitizer: reported 6 warnings
+==================
+WARNING: ThreadSanitizer: data race (pid=3241572)
+  Read of size 8 at 0x000000a206e8 by thread T1:
+    #0 invoke_callback src/threads_mngr.c:123 (valkey-server+0x758f86)
+    #1 __tsan::CallUserSignalHandler(__tsan::ThreadState*, bool, bool, bool, int, __sanitizer::__sanitizer_siginfo*, void*) <null> (libtsan.so.0+0x2e8d3)
+    #2 mutexQueuePop src/mutexqueue.c:123 (valkey-server+0x49ea1e)
+    #3 bioProcessBackgroundJobs src/bio.c:292 (valkey-server+0x49ea1e)
+
+  Previous write of size 8 at 0x000000a206e8 by main thread (mutexes: write M18, write M23):
+    #0 ThreadsManager_runOnThreads src/threads_mngr.c:85 (valkey-server+0x759027)
+    #1 writeStacktraces src/debug.c:2113 (valkey-server+0x5202ea)
+    #2 logStackTrace src/debug.c:2213 (valkey-server+0x5205be)
+    #3 sigsegvHandler src/debug.c:2541 (valkey-server+0x52e9f7)
+    #4 __tsan::CallUserSignalHandler(__tsan::ThreadState*, bool, bool, bool, int, __sanitizer::__sanitizer_siginfo*, void*) <null> (libtsan.so.0+0x2e85d)
+    #5 call src/server.c:4524 (valkey-server+0x461e8b)
+    #6 call src/server.c:4445 (valkey-server+0x461e8b)
+    #7 processCommand src/server.c:5383 (valkey-server+0x46384c)
+    #8 processCommandAndResetClient src/networking.c:4588 (valkey-server+0x62d9a0)
+    #9 processInputBufferLoop src/networking.c:4967 (valkey-server+0x62d9a0)
+    #10 processInputBuffer src/networking.c:4903 (valkey-server+0x637a5f)
+    #11 readQueryFromClient src/networking.c:5182 (valkey-server+0x637a5f)
+    #12 callHandler src/connhelpers.h:79 (valkey-server+0x6ebdf2)
+    #13 connSocketEventHandler src/socket.c:318 (valkey-server+0x6ebdf2)
+    #14 aeFireFileEvent src/ae.c:481 (valkey-server+0x476e01)
+    #15 aeProcessEvents src/ae.c:621 (valkey-server+0x476e01)
+    #16 writePhase src/staged_loop.c:723 (valkey-server+0x5ad239)
+    #17 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5ad239)
+    #18 stagedMain src/staged_loop.c:803 (valkey-server+0x5ad239)
+    #19 main src/server.c:8684 (valkey-server+0x45e784)
+
+  Location is global 'g_callback' of size 8 at 0x000000a206e8 (valkey-server+0x000000a206e8)
+
+  Mutex M18 (0x000000a1eec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x6003a1)
+    #2 main src/server.c:8392 (valkey-server+0x45e06c)
+
+  Mutex M23 (0x000000955c60) created at:
+    #0 pthread_mutex_init <null> (libtsan.so.0+0x49863)
+    #1 setupSigSegvHandler src/debug.c:2580 (valkey-server+0x52d12f)
+    #2 setupDebugSigHandlers src/debug.c:2563 (valkey-server+0x6e7011)
+    #3 setupSignalHandlers src/server.c:7918 (valkey-server+0x6e7011)
+    #4 initServer src/server.c:3314 (valkey-server+0x6cfb9f)
+    #5 main src/server.c:8601 (valkey-server+0x45e56d)
+
+  Thread T1 'bio_close_file' (tid=3241575, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 bioInit src/bio.c:189 (valkey-server+0x49956c)
+    #2 InitServerLast src/server.c:3648 (valkey-server+0x6d1868)
+    #3 main src/server.c:8636 (valkey-server+0x45e645)
+
+SUMMARY: ThreadSanitizer: data race src/threads_mngr.c:123 in invoke_callback
+==================
+==================
+WARNING: ThreadSanitizer: signal handler spoils errno (pid=3241572)
+    #0 invoke_callback src/threads_mngr.c:121 (valkey-server+0x758f70)
+    #1 mutexQueuePop src/mutexqueue.c:123 (valkey-server+0x49ea1e)
+    #2 bioProcessBackgroundJobs src/bio.c:292 (valkey-server+0x49ea1e)
+
+SUMMARY: ThreadSanitizer: signal handler spoils errno src/threads_mngr.c:121 in invoke_callback
+==================

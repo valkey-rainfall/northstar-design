@@ -1,0 +1,463 @@
+
+Repeating all tests (iteration 1) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60786 .
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (6 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 2) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60787 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 3) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60788 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (5 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 4) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60789 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 5) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60790 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[----------] 6 tests from FastpathLanesTest (3 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 6) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60791 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[----------] 6 tests from FastpathLanesTest (3 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 7) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60792 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 8) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60793 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[----------] 6 tests from FastpathLanesTest (3 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 9) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60794 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 10) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60795 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[----------] 6 tests from FastpathLanesTest (3 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 11) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60796 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 12) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60797 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[----------] 6 tests from FastpathLanesTest (3 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 13) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60798 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 14) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60799 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 15) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60800 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 16) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60801 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 17) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60802 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 18) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60803 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 19) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60804 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[----------] 6 tests from FastpathLanesTest (4 ms total)
+
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+
+Repeating all tests (iteration 20) . . .
+
+Note: Google Test filter = FastpathLanesTest.*
+Note: Randomizing tests' orders with a seed of 60805 .
+[==========] Running 6 tests from 1 test suite.
+[----------] 6 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes
+[       OK ] FastpathLanesTest.SplitMsetAndMgetKeepPipelineOrderAcrossLanes (0 ms)
+[ RUN      ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset
+[       OK ] FastpathLanesTest.ReaderNeverSeesHalfOfASplitMset (0 ms)
+[ RUN      ] FastpathLanesTest.SerialFallbackMatchesLanes
+[       OK ] FastpathLanesTest.SerialFallbackMatchesLanes (0 ms)
+[ RUN      ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet
+[       OK ] FastpathLanesTest.PipelineAclRevokeThenSetRefusesTheSet (0 ms)
+[ RUN      ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard
+[       OK ] FastpathLanesTest.MultiKeyLaneCommandsAcrossTwoShardsRunAsBarriersAndMatchOneShard (2 ms)
+[ RUN      ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue
+[       OK ] FastpathLanesTest.SplitMgetAssemblesKeyOrderWithNilsAndSpilledValue (0 ms)
+[----------] 6 tests from FastpathLanesTest (3 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 6 tests.
+All UNIT TESTS PASSED!

@@ -1,0 +1,5 @@
+asan difftest rc=0 asan_errors=0
+asan lanes rc=0 passed_iters=20 asan_errors=0
+asan multi rc=0 passed_iters=3 fails=0 asan_errors=0
+[==========] 147 tests from 14 test suites ran. (10953 ms total)
+asan-done

@@ -1,0 +1,12 @@
+[----------] 6 tests from CommandOriginTest (0 ms total)
+
+[----------] 3 tests from FastpathExecutorTest
+[----------] 3 tests from FastpathExecutorTest (0 ms total)
+
+[----------] 7 tests from PhaseBarrierTest
+[----------] 7 tests from PhaseBarrierTest (6933 ms total)
+
+[----------] Global test environment tear-down
+[==========] 83 tests from 11 test suites ran. (8139 ms total)
+[  PASSED  ] 83 tests.
+All UNIT TESTS PASSED!

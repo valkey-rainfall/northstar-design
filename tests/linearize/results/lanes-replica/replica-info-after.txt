@@ -1,0 +1,6 @@
+repl_parallel_applied:116817
+repl_apply_phases:59009
+repl_lane_reads:31160
+repl_lane_barriers:418248
+repl_lane_rechecks:0
+repl_lane_demoted:0

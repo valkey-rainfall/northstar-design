@@ -1,0 +1,19 @@
+Note: Google Test filter = FastpathListsTest.*:PhaseBarrierTest.*:KvstoreTest.*
+[==========] Running 21 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 2 tests from FastpathListsTest
+[----------] 2 tests from FastpathListsTest (0 ms total)
+
+[----------] 12 tests from KvstoreTest
+Testing 0 hashtableType
+Testing 1 hashtableType
+[ reconcile ] 16384-table kvstore, one table touched per phase: 0.367 us per phase
+[----------] 12 tests from KvstoreTest (8 ms total)
+
+[----------] 7 tests from PhaseBarrierTest
+[----------] 7 tests from PhaseBarrierTest (4589 ms total)
+
+[----------] Global test environment tear-down
+[==========] 21 tests from 3 test suites ran. (4599 ms total)
+[  PASSED  ] 21 tests.
+All UNIT TESTS PASSED!

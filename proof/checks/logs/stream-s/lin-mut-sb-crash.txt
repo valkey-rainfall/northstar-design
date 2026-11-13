@@ -1,0 +1,12 @@
+221816:M 11 Nov 2026 02:09:05.249 # valkey 255.255.255 crashed by signal: 11, si_code: 1
+221816:M 11 Nov 2026 02:09:05.249 # Accessing address: (nil)
+221816:M 11 Nov 2026 02:09:05.249 # Crashed running the instruction at: 0x52a1c3
+
+------ STACK TRACE ------
+EIP:
+$WORK/wt-s/src/valkey-server 127.0.0.1:38632[0x52a1c3]
+    raise err
+  File "/usr/lib64/python3.9/socket.py", line 844, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+addr2line 0x52a1c3: fpExecute.lto_priv.0 (mutated S-b binary)

@@ -1,0 +1,24 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index eb3df1b5..6c63a28b 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -2468,16 +2468,16 @@ static int fpExecuteWithLanes(void) {
+             fpAddPart(tid, (uint32_t)s);
+             pending += t->seg_count[s];
+             if (s == t->nbarriers) break;
+-            total += fpRunSegment(pending, serial, use_prefetch);
+-            pending = 0;
+             if (use_prefetch && s >= t->pf_barrier) fpPrefetchBarriers(t, s);
+             struct fpBarrier *br = &t->barriers[s];
+             client *ec = fpExecutor(tid);
+-            fpExecute(ec, br->b, br->e);
++            fpExecute(ec, br->b, br->e); /* MUTATION m3: barrier before its segment */
+             ec->origin = NULL;
+             clientSetUser(ec, DefaultUser, 0);
+             total++;
+             fp_stat_barriers++;
++            total += fpRunSegment(pending, serial, use_prefetch);
++            pending = 0;
+             if (!serial && (!fpLanesAllowed() || fastpathKeyObserversChanged())) serial = 1;
+         }
+     }

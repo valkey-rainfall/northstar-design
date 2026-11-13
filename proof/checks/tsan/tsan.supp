@@ -1,0 +1,28 @@
+# TSan suppressions for the proof-check runs on C (ceaa1101d) plus northstar/proof-checks.
+# Every entry is a report class outside the lane phases and the phase barrier; none is suppressed on
+# the write-lane, replica-apply or MAINT paths. Classes refer to sanitizers/sanitizers.md (S1 run).
+#
+# K1 Object header word (design section 9, LOW): the fast GET's LFU touch CASes the 32-bit header word
+#    on an IO thread while another thread reads the type bits of the same word plainly
+#    (objectGetType). READ phase only; the CAS never changes the type bits. 8 reports.
+race:fastGetTouch
+# K2 Forkless save thread vs main: INFO reads the iterator status, CONFIG SET writes a config the saver
+#    reads (rdbSaveKeyValuePair). Stock forkless-save code, not a lane. 5 reports.
+race:bgIteratorGetStatus
+race:returnCurrentItemToMainThread
+race:rdbSaveKeyValuePair
+# G11 Crash-report thread sampler runs a callback in a signal handler (stock). 2 reports.
+race:invoke_callback
+signal:invoke_callback
+# G3/G7/G8 Stock IO-thread handoffs: the client flags word and the postpone-update-state bit written
+#    after the job publish; the event loop's dont-wait bit read by the poll offload; the io_read_state
+#    byte stored plainly by ioThreadWriteSlab and read by sendReadToIOThreads (G5/G6). 5 reports.
+race:ioThreadReadQueryFromClient
+race:readToQueryBuf
+race:connSetPostponeUpdateState
+race:aeSetDontWait
+race:ioThreadWriteSlab
+race:sendReadToIOThreads
+# G2 Lock order: createIOThread takes io_threads_mutex under the module GIL at start-up. 2 reports.
+deadlock:createIOThread
+deadlock:moduleAcquireGIL

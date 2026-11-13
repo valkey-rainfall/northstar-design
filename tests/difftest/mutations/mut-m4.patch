@@ -1,0 +1,12 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index eb3df1b5..57ad1557 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -740,6 +740,7 @@ static int fpTrySplit(fpThread *t, cmdEntry *e, client *c) {
+         pt->e.argv_len_sum = 0;
+         pt->e.input_bytes = p == 0 ? e->input_bytes : 0;
+         pt->e.lane = lanes[p];
++        if (p > 0) pt->e.seg += 1; /* MUTATION m4: later parts in the next segment */
+         pt->e.shard = -1;
+         pt->e.part = 1;
+         pt->e.part_extra = p > 0;

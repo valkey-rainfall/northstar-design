@@ -1,0 +1,33 @@
+# STREAM coverage per server, from the STAGED_CHECKS shutdown line (execs multi runs entries cuts)
+# lane suites: runtest --single unit/staged-loop-lanes --single unit/maint-lanes --single integration/replica-parallel-apply --clients 1 --dont-clean (55 ok)
+server.171685.1 execs 7 multi 0 runs 31 entries 423 cuts 0
+server.171685.11 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.171685.13 execs 2 multi 0 runs 2 entries 2 cuts 0
+server.171685.15 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.171685.17 execs 213 multi 0 runs 246 entries 1311 cuts 0
+server.171685.19 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.171685.21 execs 650 multi 0 runs 863 entries 9000 cuts 0
+server.171685.23 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.171685.3 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.171685.5 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.171685.7 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.171685.9 execs 0 multi 0 runs 0 entries 0 cuts 0
+# suite mapping: servers .1-.11 staged-loop-lanes, .13-.15 maint-lanes, .17-.23 replica-parallel-apply
+# unit/staged-loop-stream --clients 1 --dont-clean (9 ok)
+server.173247.1 execs 90 multi 45 runs 2565 entries 35084 cuts 317
+server.173247.3 execs 0 multi 0 runs 0 entries 0 cuts 0
+server.173247.5 execs 11 multi 5 runs 26 entries 401 cuts 0
+# g7 black-box (phase8/g7, run_all.sh with the argument-order fix, cores 14,15)
+port 42500 execs 2 multi 0 runs 6 entries 81 cuts 0
+port 42501 execs 0 multi 0 runs 0 entries 0 cuts 0
+port 42520 execs 0 multi 0 runs 0 entries 0 cuts 0
+port 42522 execs 0 multi 0 runs 0 entries 0 cuts 0
+SUMMARY baseline failures 0
+SUMMARY lanes failures 0
+SUMMARY baseline failures 0
+SUMMARY lanes failures 0
+SUMMARY baseline lane_entries+speculated total 0 failures 0
+SUMMARY baseline lane_entries total 0 failures 0
+SUMMARY lanes lane_entries total 16741 failures 0
+SUMMARY baseline lane_entries 0 failures 0
+SUMMARY lanes lane_entries 909 failures 0

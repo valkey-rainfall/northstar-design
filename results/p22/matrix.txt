@@ -1,0 +1,71 @@
+P22M non-probe tasks: 41, states ['completed']
+
+### GET 64 B (P22M-S64)
+
+| build | tasks | task means (M ops/s) | mean | sd | vs Stock | vs C default |
+|---|---:|---|---:|---:|---:|---:|
+| C collector thread on (io10) | 3 | 33.794 33.874 33.807 | 33.825 | 0.043 | +796.9% | +3.4% |
+| C default (io10) | 2 | 32.807 32.626 | 32.717 | 0.128 | +767.5% | - |
+| Stock (io10) | 2 | 3.794 3.748 | 3.771 | 0.032 | - | -88.5% |
+
+### GET 16 B (P22M-B16)
+
+| build | tasks | task means (M ops/s) | mean | sd | vs Stock | vs C default |
+|---|---:|---|---:|---:|---:|---:|
+| C collector thread on (io10) | 3 | 33.725 33.710 33.749 | 33.728 | 0.019 | +778.9% | +3.5% |
+| C default (io10) | 2 | 32.578 32.592 | 32.585 | 0.010 | +749.1% | - |
+| Stock (io10) | 2 | 3.842 3.833 | 3.838 | 0.006 | - | -88.2% |
+
+### GET 512 B (P22M-S512)
+
+| build | tasks | task means (M ops/s) | mean | sd | vs Stock | vs C default |
+|---|---:|---|---:|---:|---:|---:|
+| C collector thread on (io10) | 3 | 10.859 10.898 10.889 | 10.882 | 0.021 | +239.4% | -5.7% |
+| C default (io10) | 2 | 11.511 11.561 | 11.536 | 0.035 | +259.8% | - |
+| Stock (io10) | 2 | 3.217 3.196 | 3.207 | 0.015 | - | -72.2% |
+
+### SET 16 B (P22M-SET16)
+
+| build | tasks | task means (M ops/s) | mean | sd | vs Stock | vs C default |
+|---|---:|---|---:|---:|---:|---:|
+| C collector thread on (io10) | 3 | 8.714 8.742 8.733 | 8.730 | 0.014 | +241.4% | -6.8% |
+| C default (io10) | 2 | 9.377 9.361 | 9.369 | 0.012 | +266.3% | - |
+| Stock (io10) | 2 | 2.554 2.561 | 2.557 | 0.005 | - | -72.7% |
+
+### 20% SET zipf, 16 B (P22M-MIX)
+
+| build | tasks | task means (M ops/s) | mean | sd | vs Stock | vs C default |
+|---|---:|---|---:|---:|---:|---:|
+| C collector thread on (io10) | 3 | 10.324 10.322 10.361 | 10.336 | 0.022 | +192.0% | +0.4% |
+| C default (io10) | 2 | 10.304 10.293 | 10.299 | 0.007 | +191.0% | - |
+| Stock (io10) | 2 | 3.539 3.539 | 3.539 | 0.000 | - | -65.6% |
+
+### GET 16 B, io-threads 1 (cell A) (P22M-A)
+
+| build | tasks | task means (M ops/s) | mean | sd | vs Stock | vs C default |
+|---|---:|---|---:|---:|---:|---:|
+| C default (io1) | 3 | 2.271 2.260 2.249 | 2.260 | 0.011 | -6.3% | - |
+| Stock (io1) | 3 | 2.414 2.413 2.412 | 2.413 | 0.001 | - | +6.8% |
+
+### Summary shaped like doc 6.4 (M ops/s, io-threads 10 unless noted)
+
+| cell | C default | C collector thread on (io-threads 10) | Stock | C-EP vs stock |
+|---|---:|---:|---:|---:|
+| GET 64 B | 32.72 | 33.82 | 3.77 | 8.97x |
+| GET 16 B | 32.58 | 33.73 | 3.84 | 8.79x |
+| GET 512 B | 11.54 | 10.88 | 3.21 | 3.39x |
+| SET 16 B | 9.37 | 8.73 | 2.56 | 3.41x |
+| 20% SET zipf, 16 B | 10.30 | 10.34 | 3.54 | 2.92x |
+| GET 16 B, io-threads 1 (cell A) | 2.26 | - (not available below io-threads 3) | 2.41 | C default 0.94x |
+| GET 4 KB | dropped: 2,400 x 64 x 4 KB in flight hits the 1 s client timeout; at pipeline 10 still 6 timeouts in 50 M requests | | | |
+
+### Quality (P22M non-probe tasks)
+
+errors: max 0.0; saturated any: False; client util 0.020-0.134
+largest rep spread: [('P22M-S64-R2', 'STOCK', 8.3), ('P22M-A-R2', 'C', 5.1), ('P22M-S64-R1', 'STOCK', 5.0), ('P22M-MIX-R1', 'STOCK', 4.4), ('P22M-A-R2', 'STOCK', 4.2)]
+task means more than 3% from their cell/build mean: []
+foreign_cpu_cores 0.005-0.04 (n=41); load_1m 0.9-9.0 (carry-over, busy_warning ignored)
+
+### ENA allowance deltas per P22 task (bw_in bw_out pps conntrack linklocal)
+
+tasks checked: 83; non-zero deltas: none; no sampler data: [('P22CAL-io16-STD', 'C', 'server'), ('P22CAL-io16-STD', 'C', 'client'), ('P22CAL-io16-LANES', 'C-LANES', 'server'), ('P22CAL-io16-LANES', 'C-LANES', 'client'), ('P22CAL-io62-STD', 'C', 'server'), ('P22CAL-io62-STD', 'C', 'client'), ('P22CAL-io62-CTL4', 'C', 'server'), ('P22CAL-io62-CTL4', 'C', 'client'), ('P22SET-io1-R1', 'C', 'server'), ('P22SET-io1-R1', 'C', 'client')]

@@ -1,0 +1,16 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 3439d0b85..ceddd5722 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -648,10 +648,7 @@ static int fpKeysShard(serverDb *db, struct serverCommand *cmd, robj **argv, int
+         }
+         int s = server.cluster_enabled ? slot : getKVStoreIndexForKey(objectGetVal(k));
+         if (i == 0) {
+-            shard = s;
+-        } else if (s != shard) {
+-            shard = -1;
+-            break;
++            shard = s; /* MUTATION m2a: the other keys' partitions are not compared */
+         }
+     }
+     getKeysFreeResult(&result);

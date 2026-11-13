@@ -1,0 +1,35 @@
+Cleanup: may take some time... OK
+Starting test server at port 21079
+[ready]: 3166345
+Testing unit/staged-loop-lanes
+[ok]: Write lanes: a pipeline's writes and reads on many shards run on the lanes, replies in order (9 ms)
+[ok]: Write lanes: a client's reads after its writes of other keys see the order it sent (4 ms)
+[ok]: Write lanes: a command only main runs splits the segment and keeps its place (1 ms)
+[ok]: Write lanes: string and key commands run on the lanes with stock semantics (2 ms)
+[ok]: Write lanes: MSET and MGET across shards run on the lanes, one part per lane (4 ms)
+[ok]: Write lanes: a split MSET is atomic for split MGETs on other connections (41 ms)
+[ok]: Write lanes: a split MGET replies RESP3 nulls (3 ms)
+[ok]: Write lanes: commandstats, errorstats, keyspace stats and latency histograms count lane commands (4 ms)
+...
+5:[ok]: Write lanes: a pipeline's writes and reads on many shards run on the lanes, replies in order (9 ms)
+6:[ok]: Write lanes: a client's reads after its writes of other keys see the order it sent (4 ms)
+7:[ok]: Write lanes: a command only main runs splits the segment and keeps its place (1 ms)
+8:[ok]: Write lanes: string and key commands run on the lanes with stock semantics (2 ms)
+9:[ok]: Write lanes: MSET and MGET across shards run on the lanes, one part per lane (4 ms)
+10:[ok]: Write lanes: a split MSET is atomic for split MGETs on other connections (41 ms)
+11:[ok]: Write lanes: a split MGET replies RESP3 nulls (3 ms)
+12:[ok]: Write lanes: commandstats, errorstats, keyspace stats and latency histograms count lane commands (4 ms)
+13:[ok]: Write lanes: SET options run on the lanes with stock semantics (2 ms)
+14:[ok]: Write lanes: each lane command takes a fresh command time (133 ms)
+15:[ok]: Write lanes: a key a lane finds expired is deleted there and counted (39 ms)
+16:[ok]: Write lanes: lanes stay off while a MONITOR is attached (3 ms)
+17:[ok]: Write lanes: io-threads-parallel-writes no runs the write phase on main (2 ms)
+18:[ok]: Write lanes: a lane prefetches its commands' keys, and replies match without it (10 ms)
+19:[ok]: Write lanes: replies stream only while the write phase runs on main (28 ms)
+20:[ok]: Write lanes: hash, set, sorted set and list commands run on the lanes with stock semantics (7 ms)
+21:[ok]: Write lanes: a command that empties a key deletes it on the lane (3 ms)
+22:[ok]: Write lanes: hash field expiry runs on the lanes and counts expired fields (13 ms)
+23:[err]: Write lanes: lanes keep running while a client is blocked; a push to its key serves it in order in tests/unit/staged-loop-lanes.tcl
+29:3166350:M 09 Nov 2026 23:09:51.274 # ==> fastpath.c:2378 '!dictFind(e->db->blocking_keys, k) && !dictFind(e->db->watched_keys, k)' is not true
+124:3166350:M 09 Nov 2026 23:09:51.292 # ==> kvstore.c:455 '!kvstoreConcurrent(kvs)' is not true
+--- main thread stack ---

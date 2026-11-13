@@ -1,0 +1,15 @@
+scenarios: 35 (5 hand-made, 30 random)
+correct                                            executions=1090    violating=0      scenarios_hit=0   PASS (no violation)
+V1 reverse_lane_order                              executions=1090    violating=563    scenarios_hit=15  VIOLATION FOUND
+    first: scenario mset-vs-mget: G1/G4/G5/G6: R replies [('2', None), (None, '2')] differ from serial [('2', '2'), ('2', '2')] (S=[('W', ('MSET', 'a', '1', 'b', '1')), ('W', ('MSET', 'a', '2', 'b', '2')), ('R', ('MGET', 'a', 'b')), ('R', ('MGET', 'b', 'a')), ('Q', ('GET', 'a')), ('Q', ('GET', 'b'))])
+V2 no_barrier_for_cross_lane                       executions=1397    violating=536    scenarios_hit=14  VIOLATION FOUND
+    first: scenario mset-vs-mget: G1/G4/G5/G6: R replies [('2', '2'), ('1', '2')] differ from serial [('2', '2'), ('2', '2')] (S=[('W', ('MSET', 'a', '1', 'b', '1')), ('W', ('MSET', 'a', '2', 'b', '2')), ('R', ('MGET', 'a', 'b')), ('R', ('MGET', 'b', 'a')), ('Q', ('GET', 'a')), ('Q', ('GET', 'b'))])
+V3 fast_get_ignores_inflight                       executions=947     violating=167    scenarios_hit=8   VIOLATION FOUND
+    first: scenario pipeline-rename: G2: linearization is not in B's program order: [('GET', 'c'), ('RENAME', 'a', 'c'), ('INCR', 'b')] vs [('RENAME', 'a', 'c'), ('GET', 'c'), ('INCR', 'b')]
+V4 stale_barrier_read (missing happens-before)     executions=1576    violating=67     scenarios_hit=8   VIOLATION FOUND
+    first: scenario rand1: G1/G4/G5/G6: c0 replies ['ERR', 'OK', 'OK'] differ from serial ['OK', 'OK', 'OK'] (S=[('c1', ('SET', 'b', '10')), ('c1', ('MSET', 'a', '1m1', 'b', '1m1')), ('c0', ('RENAME', 'a', 'b')), ('c0', ('SET', 'b', '01')), ('c0', ('MSET', 'b', '0m2', 'a', '0m2')), ('c2', ('DEL', 'b')), ('c2', ('SET', 'a', '21')), ('c2', ('MGET', 'b', 'a'))])
+V5 split_parts_cross_segments                      executions=223     violating=59     scenarios_hit=14  VIOLATION FOUND
+    first: scenario mset-vs-mget: G1/G4/G5/G6: R replies [('2', None), ('2', None)] differ from serial [('2', '2'), ('2', '2')] (S=[('W', ('MSET', 'a', '1', 'b', '1')), ('W', ('MSET', 'a', '2', 'b', '2')), ('R', ('MGET', 'a', 'b')), ('R', ('MGET', 'b', 'a')), ('Q', ('GET', 'a')), ('Q', ('GET', 'b'))])
+V6 no_issue29_recheck                              executions=1120    violating=2      scenarios_hit=1   VIOLATION FOUND
+    first: scenario watch-same-iteration: G1/G4/G5/G6: X replies ['OK', ('OK',)] differ from serial ['OK', 'ABORT'] (S=[('X', ('WATCH', 'a')), ('Y', ('SET', 'a', '1')), ('Y', ('SET', 'b', '1')), ('Z', ('GET', 'c')), ('X', ('EXEC', [('SET', 'c', 'tx')]))])
+RESULT: correct design clean, every broken variant detected

@@ -1,0 +1,3 @@
+[ok]: Stream none: pipelined per-key INCR keep exact per-connection sequence (P16) (200 ms)
+222217:M 11 Nov 2026 02:09:48.953 # valkey 255.255.255 crashed by signal: 11, si_code: 1
+[exception]: Executing test client: EOF.

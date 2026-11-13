@@ -1,0 +1,233 @@
+Note: Google Test filter = FastpathDifftest.LanesMatch*
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from FastpathDifftest
+[ RUN      ] FastpathDifftest.LanesMatchSerialExecutorOverRandomPrograms
+test_fastpath_difftest.cpp:502: Failure
+Failed
+the lane, serial-segment and plain executors differ
+seed 1: 3 clients, 3 rounds
+ round 0 write order: c0 c1 c2
+ c0:
+  SET k7 -3
+  LPUSH k1 bb a
+  SMOVE k1 k7 m2
+ c1:
+  TYPE k9
+  SET k1 bb
+  EXISTS k9 k1 k1
+  GETEX k3 PXAT 4102444800000
+  LRANGE k9 0 -1
+  GETDEL k9
+  TYPE k1
+  RENAME k1 k2
+  MGET k7 k2 k2
+  MSET k1 bb k1 x7 k7 -3
+  EXPIRE k7 0
+ c2:
+  MGET k2 k9
+  HINCRBY k2 f3 2
+ round 1 write order: c1 c2 c0
+ c0:
+  SUNIONSTORE k9 k1 k2
+  ZINCRBY k0 1 m3
+  TYPE k2
+  ZSCORE k0 m1
+  HSET k0 f3 10
+  SETRANGE k2 0 x7
+  MSET k9 1 k2 bb k3 bb
+  DEL k3 k3
+  DEL k2 k1
+  LMOVE k3 k9 LEFT LEFT
+  GETDEL k1
+ c1:
+  LMOVE k3 k9 RIGHT LEFT
+  ZSCORE k0 m3
+  EXISTS k3 k9 k7
+  RENAME k7 k0
+  STRLEN k9
+  GET k9
+  APPEND k9 1
+  ZUNIONSTORE k1 2 k1 k2
+  MSET k2 1 k2 a k7 a
+  MSET k3 2 k0 10 k7 x7
+  EXISTS k9 k3 k1
+  GETRANGE k0 0 -1
+ c2:
+  APPEND k0 x7
+  ZINCRBY k0 1 m4
+  ZSCORE k3 m2
+  LRANGE k3 0 -1
+  PERSIST k0
+ round 2 write order: c2 c0 c1
+ c0:
+  LPUSH k9 x7 -3
+  SMOVE k7 k2 m3
+  LMOVE k0 k7 RIGHT LEFT
+  HINCRBY k1 f1 2
+  SETRANGE k7 3 a
+  SET k1 2
+  SET k9 2
+  MGET k9 k2
+  HGET k0 f2
+  STRLEN k1
+  TYPE k9
+ c1:
+  HINCRBY k9 f2 2
+  ZUNIONSTORE k3 2 k3 k1
+  GET k7
+  MSETNX k9 10 k3 a
+  EXPIRE k3 0
+  SMOVE k1 k9 m3
+  GETDEL k9
+  SETRANGE k0 0 10
+ c2:
+  LPUSH k1 bb x7
+  SET k2 1
+  INCRBY k9 1
+  RENAME k2 k9
+  UNLINK k0
+  SETRANGE k9 0 a
+  MGET k2 k9
+  SADD k3 m3 m1
+  RENAME k0 k2
+  SREM k0 m3
+  SMOVE k2 k2 m3
+  LPOP k3
+ c0 lanes : +OK | :2 | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | -WRONGTYPE Operation against a key holding the wrong kind of value | +string | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :2 | +OK | :1 | :1 | $-1 | $2 | x7 | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :4 | +OK | +OK | *2 | $1 | 2 | $2 | bb | $-1 | :1 | +string | 
+ c0 serial: +OK | :2 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | +string | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :2 | +OK | :1 | :2 | $-1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :4 | +OK | +OK | *2 | $1 | 2 | $-1 | $-1 | :1 | +string | 
+ c0 plain : +OK | :2 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | +string | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :2 | +OK | :1 | :2 | $-1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :4 | +OK | +OK | *2 | $1 | 2 | $-1 | $-1 | :1 | +string | 
+ c1 lanes : +none | +OK | :0 | $-1 | *0 | $-1 | +string | +OK | *3 | $2 | -3 | $-1 | $-1 | +OK | :1 | $-1 | $-1 | :0 | -ERR no such key | :0 | $-1 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | +OK | :1 | $0 |  | -WRONGTYPE Operation against a key holding the wrong kind of value | :2 | $4 | \0\0\0a | :0 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | $1 | 2 | :2 | 
+ c1 serial: +none | +OK | :2 | $-1 | *0 | $-1 | +string | +OK | *3 | $2 | -3 | $2 | bb | $2 | bb | +OK | :1 | $-1 | $-1 | :0 | -ERR no such key | :0 | $-1 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | +OK | :3 | $2 | 10 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | $4 | x7\0a | :0 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | $1 | 2 | :2 | 
+ c1 plain : +none | +OK | :2 | $-1 | *0 | $-1 | +string | +OK | *3 | $2 | -3 | $2 | bb | $2 | bb | +OK | :1 | $-1 | $-1 | :0 | -ERR no such key | :0 | $-1 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | +OK | :3 | $2 | 10 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | $4 | x7\0a | :0 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | $1 | 2 | :2 | 
+ c2 lanes : *2 | $2 | bb | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :2 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | :2 | +OK | :2 | +OK | :1 | :1 | *2 | $-1 | $-1 | :2 | -ERR no such key | :0 | :0 | -WRONGTYPE Operation against a key holding the wrong kind of value | 
+ c2 serial: *2 | $2 | bb | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :4 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | :2 | +OK | :2 | +OK | :1 | :1 | *2 | $-1 | $1 | a | :2 | -ERR no such key | :0 | :0 | -WRONGTYPE Operation against a key holding the wrong kind of value | 
+ c2 plain : *2 | $2 | bb | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :4 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | :2 | +OK | :2 | +OK | :1 | :1 | *2 | $-1 | $1 | a | :2 | -ERR no such key | :0 | :0 | -WRONGTYPE Operation against a key holding the wrong kind of value | 
+ dump lanes : +string | $2 | 10 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +string | $1 | 2 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +string | $4 | \0\0\0a | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ dump serial: +string | $2 | 10 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +string | $1 | 2 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +string | $4 | x7\0a | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ dump plain : +string | $2 | 10 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +string | $1 | 2 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +string | $4 | x7\0a | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ lane run: phases 9 entries 112 barriers 5; serial run: segments 9 phases 0
+
+
+test_fastpath_difftest.cpp:502: Failure
+Failed
+the lane, serial-segment and plain executors differ
+seed 2: 2 clients, 3 rounds
+ round 0 write order: c0 c1
+ c0:
+  SINTERSTORE k7 k9 k3
+  MSET k2 x7 k3 bb
+  HGET k3 f3
+  SINTERSTORE k0 k3 k7
+  ZUNIONSTORE k2 2 k9 k7
+  TYPE k2
+  RPUSH k0 -3
+  MSETNX k7 -3 k2 2
+ c1:
+  STRLEN k2
+  ZINCRBY k0 1 m2
+  TYPE k1
+  MGET k1 k7
+  SMOVE k3 k1 m2
+  ZADD k2 x7 m1
+  RPUSH k0 a
+ round 1 write order: c1 c0
+ c0:
+  SMOVE k0 k7 m3
+  LRANGE k3 0 -1
+  RENAME k7 k3
+  STRLEN k3
+  ZUNIONSTORE k3 2 k1 k9
+  DEL k3 k2
+  ZADD k2 bb m2
+  SINTERSTORE k7 k0 k9
+  INCRBY k0 2
+  INCR k7
+  ZSCORE k9 m3
+ c1:
+  SETRANGE k9 3 10
+  RPUSH k0 a
+  MSET k9 10 k0 x7 k9 10
+  MGET k2 k3
+  LRANGE k0 0 -1
+  LRANGE k3 0 -1
+  PEXPIREAT k7 4102444800000
+  ZADD k3 x7 m2
+  APPEND k3 a
+  SETRANGE k1 3 bb
+  TYPE k9
+ round 2 write order: c1 c0
+ c0:
+  GETDEL k3
+ c1:
+  TYPE k1
+  ZADD k2 bb m2
+  LMOVE k9 k2 LEFT RIGHT
+  RENAME k7 k7
+  EXPIRE k9 0
+  MGET k2 k1
+ c0 lanes : :0 | +OK | $-1 | :0 | :0 | +none | :1 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | :2 | :0 | :1 | -ERR value is not a valid float | :0 | -WRONGTYPE Operation against a key holding the wrong kind of value | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | $-1 | 
+ c0 serial: :0 | +OK | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | +none | :1 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | :2 | -WRONGTYPE Operation against a key holding the wrong kind of value | :2 | -ERR value is not a valid float | -WRONGTYPE Operation against a key holding the wrong kind of value | -ERR value is not an integer or out of range | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | $-1 | 
+ c0 plain : :0 | +OK | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | +none | :1 | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | :2 | -WRONGTYPE Operation against a key holding the wrong kind of value | :2 | -ERR value is not a valid float | -WRONGTYPE Operation against a key holding the wrong kind of value | -ERR value is not an integer or out of range | :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | $-1 | 
+ c1 lanes : :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | +none | *2 | $-1 | $-1 | :0 | -ERR value is not a valid float | :2 | :5 | :3 | +OK | *2 | $1 | 2 | $2 | bb | *3 | $2 | -3 | $1 | a | $1 | a | *0 | :1 | -ERR value is not a valid float | :1 | :5 | +string | +string | -ERR value is not a valid float | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | :1 | *2 | $-1 | $-1 | 
+ c1 serial: :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | +none | *2 | $-1 | $2 | -3 | -WRONGTYPE Operation against a key holding the wrong kind of value | -ERR value is not a valid float | :2 | :5 | :3 | +OK | *2 | $1 | 2 | $2 | bb | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :1 | -ERR value is not a valid float | :3 | :5 | +string | +string | -ERR value is not a valid float | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | :1 | *2 | $-1 | $5 | \0\0\0bb | 
+ c1 plain : :1 | -WRONGTYPE Operation against a key holding the wrong kind of value | +none | *2 | $-1 | $2 | -3 | -WRONGTYPE Operation against a key holding the wrong kind of value | -ERR value is not a valid float | :2 | :5 | :3 | +OK | *2 | $1 | 2 | $2 | bb | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :1 | -ERR value is not a valid float | :3 | :5 | +string | +string | -ERR value is not a valid float | -WRONGTYPE Operation against a key holding the wrong kind of value | +OK | :1 | *2 | $-1 | $5 | \0\0\0bb | 
+ dump lanes : +list | -WRONGTYPE Operation against a key holding the wrong kind of value | *3 | $2 | -3 | $1 | a | $1 | a | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +string | $5 | \0\0\0bb | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +string | $1 | 1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ dump serial: +string | $2 | x7 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +string | $5 | \0\0\0bb | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +string | $1 | 1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ dump plain : +string | $2 | x7 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +string | $5 | \0\0\0bb | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +string | $1 | 1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ lane run: phases 7 entries 83 barriers 3; serial run: segments 7 phases 0
+
+
+test_fastpath_difftest.cpp:502: Failure
+Failed
+the lane, serial-segment and plain executors differ
+seed 3: 1 clients, 3 rounds
+ round 0 write order: c0
+ c0:
+  LMOVE k7 k2 RIGHT LEFT
+  ZSCORE k1 m4
+  SINTERSTORE k3 k9 k9
+  MSET k9 a k1 10
+  SADD k3 m3 m4
+  MGET k2 k2 k0
+  GETRANGE k3 0 -1
+  SUNIONSTORE k0 k9 k3
+ round 1 write order: c0
+ c0:
+  SUNIONSTORE k0 k2 k9
+  INCRBY k1 x7
+  SINTERSTORE k3 k1 k0
+  ZADD k2 1 m3
+  SET k3 1
+  UNLINK k1
+  STRLEN k9
+ round 2 write order: c0
+ c0:
+  ZUNIONSTORE k3 2 k1 k1
+  EXPIRE k9 0
+ c0 lanes : $-1 | $-1 | :0 | +OK | :2 | *3 | $-1 | $-1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :0 | :0 | -ERR value is not an integer or out of range | :0 | :1 | +OK | :0 | :1 | :0 | :1 | 
+ c0 serial: $-1 | $-1 | :0 | +OK | :2 | *3 | $-1 | $-1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -ERR value is not an integer or out of range | -WRONGTYPE Operation against a key holding the wrong kind of value | :1 | +OK | :1 | :1 | :0 | :1 | 
+ c0 plain : $-1 | $-1 | :0 | +OK | :2 | *3 | $-1 | $-1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -ERR value is not an integer or out of range | -WRONGTYPE Operation against a key holding the wrong kind of value | :1 | +OK | :1 | :1 | :0 | :1 | 
+ dump lanes : +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +zset | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | *4 | $-1 | $-1 | $1 | 1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ dump serial: +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +zset | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | *4 | $-1 | $-1 | $1 | 1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ dump plain : +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +zset | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | -WRONGTYPE Operation against a key holding the wrong kind of value | *4 | $-1 | $-1 | $1 | 1 | $-1 | -WRONGTYPE Operation against a key holding the wrong kind of value | :-1 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | +none | $-1 | *0 | *4 | :0 | :0 | :0 | :0 | *4 | $-1 | $-1 | $-1 | $-1 | *3 | $-1 | $-1 | $-1 | :-2 | 
+ lane run: phases 4 entries 59 barriers 0; serial run: segments 4 phases 0
+
+
+test_fastpath_difftest.cpp:537: Failure
+Expected equality of these values:
+  failed
+    Which is: 3
+  0
+replay with DIFFTEST_SEED=<seed> --gtest_filter=FastpathDifftest.*
+
+[  FAILED  ] FastpathDifftest.LanesMatchSerialExecutorOverRandomPrograms (3 ms)
+[----------] 1 test from FastpathDifftest (3 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (5 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] FastpathDifftest.LanesMatchSerialExecutorOverRandomPrograms
+
+ 1 FAILED TEST

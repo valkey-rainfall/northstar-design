@@ -1,0 +1,93 @@
+{
+ "groups": {
+  "snap0": [
+   "snap0",
+   "snap1",
+   "snap2",
+   "snap3"
+  ],
+  "pair0": [
+   "p0",
+   "p1"
+  ]
+ },
+ "accounts": [
+  "a0",
+  "a1",
+  "a2",
+  "a3"
+ ],
+ "total": 400,
+ "keys": {
+  "regs": [
+   "r0",
+   "r1",
+   "r2",
+   "r3"
+  ],
+  "counters": [
+   "n0",
+   "n1"
+  ],
+  "snap": [
+   "snap0",
+   "snap1",
+   "snap2",
+   "snap3"
+  ],
+  "pair": [
+   "p0",
+   "p1"
+  ],
+  "accounts": [
+   "a0",
+   "a1",
+   "a2",
+   "a3"
+  ]
+ },
+ "engagement": {
+  "fastpath_clients": 0,
+  "fastpath_reads": 36426,
+  "fastpath_writes": 32134,
+  "fastpath_batches": 8876,
+  "fastpath_speculated": 6678,
+  "fastpath_write_lane_phases": 7120,
+  "fastpath_write_lane_entries": 53932,
+  "fastpath_write_barriers": 2198,
+  "fastpath_write_serial_segments": 0,
+  "total_commands_processed": 48952,
+  "io_threads_active": 0,
+  "keyspace_shard_bits": 8,
+  "fastpath_clients_after": "0"
+ },
+ "ops": 36573,
+ "resp_errors": 610,
+ "config": {
+  "port": 38530,
+  "replica_port": 38531,
+  "seconds": 10.0,
+  "clients": 8,
+  "pipeline": 0,
+  "seed": 1,
+  "out": "$WORK/run-linearize/lanes-replica/h01.jsonl"
+ },
+ "shards": {
+  "r0": 202,
+  "r1": 246,
+  "r2": 161,
+  "r3": 77,
+  "n0": 125,
+  "n1": 33,
+  "snap0": 56,
+  "snap1": 144,
+  "snap2": 72,
+  "snap3": 160,
+  "p0": 50,
+  "p1": 78,
+  "a0": 49,
+  "a1": 5,
+  "a2": 94,
+  "a3": 178
+ }
+}

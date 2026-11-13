@@ -1,0 +1,7 @@
+# tag=f3-c32-pf2 mode=lanes port=38623 count=4 secs=10 clients=32 pipes=0 2 seed0=300 extra=--io-threads-parallel-writes-min 1000000 --staged-main-lane yes --prefetch-batch-max-size 2
+# n seed pipeline ops errors verdict lane_entries lane_phases stream_phases stream_execs stream_multi stream_runs stream_entries stream_cuts
+1 301 0 109445 1840 PASS 0 0 7139 7139 1152 11018 11018 0
+2 302 2 157676 2669 PASS 0 0 12821 12821 390 18446 25134 4925
+3 303 0 120501 2171 PASS 0 0 7144 7144 310 7694 7694 0
+4 304 2 158744 2671 PASS 0 0 13010 13010 304 18524 25264 4961
+# pass=4 fail=0

@@ -1,0 +1,23 @@
+Cleanup: may take some time... OK
+Starting test server at port 21079
+[ready]: 3220588
+Testing unit/staged-loop-lanes
+[ok]: Write lanes: a pipeline's writes and reads on many shards run on the lanes, replies in order (5 ms)
+[ok]: Write lanes: a client's reads after its writes of other keys see the order it sent (5 ms)
+[ok]: Write lanes: a command only main runs splits the segment and keeps its place (2 ms)
+[ok]: Write lanes: string and key commands run on the lanes with stock semantics (1 ms)
+[err]: Write lanes: MSET and MGET across shards run on the lanes, one part per lane in tests/unit/staged-loop-lanes.tcl
+Expected '+OK' to be equal to '' (context: type eval line 15 cmd {assert_equal {+OK} [pwl_read_reply $fd]} proc ::test)
+
+Logged crash report (pid 3220593):
+...
+5:[ok]: Write lanes: a pipeline's writes and reads on many shards run on the lanes, replies in order (5 ms)
+6:[ok]: Write lanes: a client's reads after its writes of other keys see the order it sent (5 ms)
+7:[ok]: Write lanes: a command only main runs splits the segment and keeps its place (2 ms)
+8:[ok]: Write lanes: string and key commands run on the lanes with stock semantics (1 ms)
+9:[err]: Write lanes: MSET and MGET across shards run on the lanes, one part per lane in tests/unit/staged-loop-lanes.tcl
+15:3220593:M 09 Nov 2026 23:31:09.524 # ==> kvstore.c:167 '(kvs_owned_mod > 0 && didx % kvs_owned_mod == kvs_owned_lane) || didx == kvs_owned_only' is not true
+20:3220593:M 09 Nov 2026 23:31:09.525 # ==> kvstore.c:167 '(kvs_owned_mod > 0 && didx % kvs_owned_mod == kvs_owned_lane) || didx == kvs_owned_only' is not true
+23:3220593:M 09 Nov 2026 23:31:09.525 # ==> kvstore.c:167 '(kvs_owned_mod > 0 && didx % kvs_owned_mod == kvs_owned_lane) || didx == kvs_owned_only' is not true
+28:3220593:M 09 Nov 2026 23:31:09.525 # ==> kvstore.c:167 '(kvs_owned_mod > 0 && didx % kvs_owned_mod == kvs_owned_lane) || didx == kvs_owned_only' is not true
+29:3220593:M 09 Nov 2026 23:31:09.525 # ==> kvstore.c:167 '(kvs_owned_mod > 0 && didx % kvs_owned_mod == kvs_owned_lane) || didx == kvs_owned_only' is not true

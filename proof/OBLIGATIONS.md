@@ -1,0 +1,44 @@
+# OBLIGATIONS.md: what the proof assumes about the C code
+
+Revision: HEAD = origin/audit/issue29-counter-recheck (1fb18b7d). "Checked: reading" means this worker read
+the cited lines at HEAD. "Checked: test" names an existing test by path. "Not checked" means the proof
+relies on it and nobody in this phase has verified it (W-B's lane-population audit covers several).
+
+Status words: SATISFIED (read and holds), SATISFIED-AT-HEAD-ONLY (broken at S1, fixed by a later commit),
+ASSUMED (taken from an earlier report, not re-read), OPEN (not obviously satisfied; a finding).
+
+| ID | Obligation (what the lemma needs) | Code location (HEAD) | How checked | Status |
+|---|---|---|---|---|
+| O1 | Every lane command declares all keys it reads or writes through getKeysFromCommand; no lane command reads undeclared keys (SORT BY/GET, EVAL, module commands excluded). L1. | fp_lane_commands fastpath.c:468-490 (list), fpKeysShard :617 | W-B allowlist audit (LANE-POPULATION.md); rt-multikey-atomicity A9 for *STORE | ASSUMED (W-B) |
+| O2 | A fast-path client's commands of one iteration are parsed by one thread, in order, into one thread's batches; a client is read by at most one thread per iteration. L7, G2. | fastpathStagedReadPhase :1682-1718 (atomic fd cursor), fpHarvest :874-955 | reading; tests/wave2 w1-seams; rt-client-ordering | SATISFIED |
+| O3 | A lane entry's cmd->proc touches only hashtables of its shard: ec->slot = e->shard, or -1 with per-key hashing for split parts and one-lane split entries. L1. | fpLaneExecute :1998 (ec->slot = e->shard); db.c:278-282 (getKVStoreIndexForKeyWithSlot uses c->slot only when executing on a lane with slot >= 0) | reading | SATISFIED |
+| O4 | Lazy expiry or any implicit write inside a lane entry stays in the entry's shard (deletes only the key it read). L1. | db.c:526 (debugServerAssert inMainThread or exec_lane), dbGenericDeleteWithDictIndex exec_lane path; design.md 5.2 (frees offloaded, not inline) | reading of the assert; rt-multikey-atomicity A5 (PEXPIRE 1 ms vs MGET) | SATISFIED |
+| O5 | During a WRITE phase the per-shard tables of keys, expires and keys_with_volatile_items are the only keyspace memory a lane writes, they are disjoint per shard, and kvstore-level counters are reconciled after the phase (concurrent mode). L1, L4. | db.c:578-600 dbLanePhaseBegin/End; kvstore.c kvstoreSetConcurrent, kvstoreReconcile | design.md 2.3/5.4 reading; not re-read here | ASSUMED (design.md) |
+| O6 | Lane cursors are reset before the first segment and advanced only by the owning lane; no entry is skipped or executed twice; entries of a segment that ran serially are skipped by the lane. L2. | fpExecuteWithLanes :2461 (memset cursor), fastpathStagedWriteLane :2095-2101 | reading; tests/rt-multikey-atomicity 01 patch (FastpathLanesTest, serial fallback case) | SATISFIED |
+| O7 | Every variable a lane reads that main or an IO thread wrote (lane_ents, seg, fp_parts, fp_phase_time, fp_nlanes, the keyspace) is written before phaseBarrierOpen and read after phaseBarrierAwaitPhase; every lane write is read by main only after phaseBarrierWaitAllDone. L6. | phase_barrier.c:86-116, 139-180; fastpath.c:178-182 comment | reading of the barrier; the set of plain shared variables is not enumerated here; W-C1 TSan runs | SATISFIED for the barrier; ASSUMED for completeness of the variable set |
+| O8 | No thread other than lanes touches the keyspace during a WRITE phase: main is in phaseBarrierWaitAllDone or running lane 0; fast GET only in READ; STREAM closed with a full wait before WRITE; ae clients only after fastpathStagedExecute; MAINT/cron/eviction in other steps. L3, L8, section 3. | staged_loop.c:637-642, :470-480; fastpath.c:1002 (fpSpeculate in fpRead), :957 (depth 0) | reading; design.md 2.2-2.3 | SATISFIED |
+| O9 | Replica plan: segment numbers are global across parse chunks (k->base + e->seg) so a lane entry of chunk 2 segment 0 runs after chunk 1's barriers. L4b. | repl_apply.c:383-395 (rpMerge sets base), :409 | reading | SATISFIED |
+| O10 | A split MSET is propagated as MULTI / parts / EXEC when more than one part propagated, so the replica applies it whole (as a barrier). L4b, G8. | fpFeedSplitPropagation :2173-2222 (wrap = nframes > 1) | reading; rt-multikey-atomicity A11 | SATISFIED (issue 25 is the performance side) |
+| O11 | All parts of a split entry carry the same seg as the whole, so they run in the same lane phase. L5. | fpClassify :783 sets e->seg before fpTrySplit; fpTrySplit :737 `pt->e = *e` | reading; unit test in tests/rt-multikey-atomicity (split atomicity cases) | SATISFIED |
+| O12 | Requeued (unexecuted) entries are replayed in program order before anything parsed after them, including a partially parsed command. L7. | fpRequeue :1102-1180 | fix N1 (tests/wave2 difftest, rt-client-ordering); at S1 a partial parse could reorder | SATISFIED-AT-HEAD-ONLY |
+| O13 | Fast GET answers only a leading run of GETs of a client with fp_inflight == 0, at depth 0, and sends the reply behind any buffered bytes. L7, L8. | fpSpeculate :956-967; fpSend :1058-1064 | reading; rt-multikey-atomicity A10 (GET-only pipeline after a program) | SATISFIED |
+| O14 | Replies are delivered per client in batch order; STREAM delivery only up to the published executed prefix (release store / acquire load). G1. | fpDeliverRange :1233-1262; :2576-2580 publish; :2724-2738 deliver | reading; rt-client-ordering | SATISFIED |
+| O15 | fpLanesAllowed excludes every observer that would read lane effects out of T order: keyspace events, tracking, module write observers, MONITOR, forkless save, throttler, maxmemory, blocked module clients, rehashing watched/blocked dicts. G6, G10, G11. | fpLanesAllowed :1720-1738 | reading (list), W-B traceability; the completeness of the list is a judgement | SATISFIED (list) / ASSUMED (completeness) |
+| O16 | The lane key is the shard only; entries of different dbs with the same shard share a lane, which is still a partition of (db, shard). SELECT is not a lane command, so a pipeline with SELECT makes a barrier and later entries carry the new db. L1. | fpAppendEntry :859 (e->db = c->db); fpKeysShard uses e->db for observers only | reading | SATISFIED |
+| O17 | A barrier that adds a WATCH or a blocking key after classification makes the rest of the iteration serial (observer set changed), so no lane write lands on a newly observed key without dirtying it. G5, G7. | fastpathKeyObserversChanged :568; fpExecuteWithLanes :2460, :2481; repl_apply.c:546-549 | reading; tests/wave2/issue29-fix; model variant V6 | SATISFIED-AT-HEAD-ONLY (issue 29; S1 lacks it) |
+| O18 | IO-thread inbox jobs drained at the start of a WRITE phase never read or write the keyspace (socket writes, deferred reads/parses, frees of unlinked values). Section 3. | io_threads.c:1341-1345 (drain at phase start); job types io_threads.c (design.md 5.2) | grep at HEAD: no lookupKey/kvstore/dbFind in io_threads.c; job dispatch io_threads.c:1250-1312 lists READ_CLIENT, WRITE_CLIENT, FREE_OBJ, ACCEPT, POLL, CLUSTER_READ/WRITE/ACCEPT, FREE_ARGV, POLL, WRITE_SLAB, FREE_SLAB; the read job parses into the client's queue only | SATISFIED (by grep; a handler calling into db.c indirectly was not traced) |
+| O19 | keyspace_shard_bits and the number of lanes are constant within an iteration (shard function stable from classification to execution). L1, L2. | config.c:3529 IMMUTABLE_CONFIG; fastpathStagedPrepareLanes :1740-1749 (fp_nlanes fixed per iteration); replApplyRunPlan repl_apply.c:586-592 (re-checks nlanes) | reading | SATISFIED |
+| O20 | Observed-key classification reads db->watched_keys and db->blocking_keys on IO threads while main does not modify them (READ phase), and the flags were sampled on main before READ opened. G5, G7. | fpKeyObserved :602-606; :1750-1752 sampled in fastpathStagedPrepareLanes before readPhase opens | reading; fpLanesAllowed refuses lanes while those dicts rehash (:1720-1738) | SATISFIED |
+
+## Flags
+
+- No obligation is OPEN at HEAD. Two are SATISFIED-AT-HEAD-ONLY (O12 requeue order, O17 issue-29 recheck):
+  at S1 the proof does not go through for G2 (partial parse requeue) and G5 (WATCH added mid-iteration).
+  The model's variant V6 shows the shape of the S1 failure for O17.
+- Three are ASSUMED from earlier reports rather than re-read (O1, O5, O7 completeness). O18 was
+  checked by a grep of io_threads.c at HEAD (no keyspace lookup in the file; the job list is the stock
+  one plus free slabs); one IO-thread job that read a hashtable during a WRITE phase would break L1
+  without any lane code being wrong, so a new job type must keep that property.
+- O15 is a judgement about completeness of a denylist; the design keeps lanes off whenever anything can
+  observe the keyspace mid-iteration, which is the right shape, but a new observer added to the server
+  must be added to fpLanesAllowed (and fastpathStreamLanesAllowed) by hand.

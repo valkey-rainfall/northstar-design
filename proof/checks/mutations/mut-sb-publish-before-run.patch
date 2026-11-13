@@ -1,0 +1,16 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 0155842e5..43b116084 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -3327,6 +3327,11 @@ int fastpathStagedExecuteStreaming(void) {
+                     acc[i] = 0;
+                 }
+                 int before = cur[i].ei;
++                { /* MUTATION S-b: publish the run before it runs */
++                    int end = before, lim = run_window - w;
++                    while (end < b->count && b->e[end].c == b->e[before].c && end - before < lim) end++;
++                    fpStreamPublish(b, end);
++                }
+                 fpStreamExecRun(ecs[i], b, &cur[i], run_window - w);
+                 int ran = cur[i].ei - before;
+                 acc[i] += ran;

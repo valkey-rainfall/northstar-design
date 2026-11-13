@@ -1,0 +1,22 @@
+P22X11 tasks: 9 states {'completed'}
+  2026.11.10_11.11.18.398446 mean 12.014 reps 12.09 12.00 12.07 11.91 12.01 spread 1.4% err 0.0 util 0.084 sat False foreign 0.035
+  2026.11.10_11.11.27.539071 mean 12.047 reps 12.01 12.04 12.06 12.06 12.06 spread 0.4% err 0.0 util 0.084 sat False foreign 0.065
+  2026.11.10_11.11.31.254113 mean 12.050 reps 12.10 12.07 12.01 12.03 12.05 spread 0.7% err 0.0 util 0.084 sat False foreign 0.01
+  2026.11.10_11.11.20.205267 mean 9.600 reps 9.54 9.61 9.60 9.64 9.61 spread 1.0% err 0.0 util 0.07 sat False foreign 0.01
+  2026.11.10_11.11.23.805801 mean 9.611 reps 9.63 9.59 9.60 9.61 9.62 spread 0.4% err 0.0 util 0.07 sat False foreign 0.015
+  2026.11.10_11.11.33.097124 mean 9.641 reps 9.63 9.62 9.69 9.65 9.61 spread 0.8% err 0.0 util 0.07 sat False foreign 0.04
+  2026.11.10_11.11.21.996463 mean 37.445 reps 37.39 37.08 37.65 37.48 37.62 spread 1.5% err 0.0 util 0.146 sat False foreign 0.015
+  2026.11.10_11.11.25.649793 mean 37.479 reps 37.88 37.34 37.38 37.34 37.46 spread 1.4% err 0.0 util 0.147 sat False foreign 0.005
+  2026.11.10_11.11.29.412139 mean 37.564 reps 37.53 37.89 37.10 37.67 37.63 spread 2.1% err 0.0 util 0.147 sat False foreign 0.01
+
+| cell | C default io10 | C-EP io10 | C-EP io11 | io11 vs C default io10 | io11 vs C-EP io10 |
+|---|---:|---:|---:|---:|---:|
+| GET 512 B | 11.536 (sd 0.035, n=2) | 10.882 (sd 0.021, n=3) | 12.037 (sd 0.020, n=3) | +4.3% | +10.6% |
+|  task means io11 | 12.014 12.047 12.050 | | | | |
+| SET 16 B | 9.369 (sd 0.012, n=2) | 8.730 (sd 0.014, n=3) | 9.618 (sd 0.021, n=3) | +2.7% | +10.2% |
+|  task means io11 | 9.600 9.611 9.641 | | | | |
+| GET 64 B | 32.717 (sd 0.128, n=2) | 33.825 (sd 0.043, n=3) | 37.496 (sd 0.061, n=3) | +14.6% | +10.9% |
+|  task means io11 | 37.445 37.479 37.564 | | | | |
+
+quality: max err 0.0 sat any False util 0.070-0.147 max spread 2.1% foreign 0.005-0.065
+window 2026-11-10T11:11:42.436995Z to 2026-11-10T12:35:37.023661Z

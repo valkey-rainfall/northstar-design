@@ -1,0 +1,1 @@
+case tls: clients 8 rounds 300 ahead 0 differences 0; {'fastpath_batches': '3179', 'fastpath_clients': '9', 'fastpath_speculated': '0', 'fastpath_writes': '16827', 'staged_epoll_thread': '0', 'staged_iterations': '1931', 'staged_main_lane': '1', 'staged_reply_phases': '1456'}

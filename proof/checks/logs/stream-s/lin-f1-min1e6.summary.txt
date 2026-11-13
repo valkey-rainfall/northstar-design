@@ -1,0 +1,9 @@
+# tag=f1-min1e6 mode=lanes port=38621 count=6 secs=10 clients=16 pipes=0 4 8 seed0=100 extra=--io-threads-parallel-writes-min 1000000 --staged-main-lane yes
+# n seed pipeline ops errors verdict lane_entries lane_phases stream_phases stream_execs stream_multi stream_runs stream_entries stream_cuts
+1 101 0 115803 2025 PASS 0 0 8071 8071 1074 10248 10248 0
+2 102 4 189652 3166 PASS 0 0 10210 10210 399 11029 36594 202
+3 103 8 220248 3660 PASS 0 0 6667 6667 56 8502 36888 1773
+4 104 0 115149 1857 PASS 0 0 7920 7920 1368 10747 10747 0
+5 105 4 192492 3336 PASS 0 0 10973 10973 239 11469 38346 122
+6 106 8 217560 3644 PASS 0 0 6896 6896 86 8787 38338 1794
+# pass=6 fail=0

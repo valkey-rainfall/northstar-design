@@ -1,0 +1,69 @@
+Note: Google Test filter = FastpathLanesTest.*InTheWindow*
+[==========] Running 2 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 2 tests from FastpathLanesTest
+[ RUN      ] FastpathLanesTest.BlockingPopInTheWindowIsServedBeforeTheNextLaneEntry
+test_fastpath_lanes.cpp:590: Failure
+Expected equality of these values:
+  recv(pf)
+    Which is: ":1\r\n:1\r\n"
+  ":1\r\n:0\r\n"
+With diff:
+@@ -1,2 +1,2 @@
+ :1\r
+-:1\r\n
++:0\r\n
+
+
+test_fastpath_lanes.cpp:591: Failure
+Expected equality of these values:
+  b->flag.blocked
+    Which is: 1
+  0u
+    Which is: 0
+the blocked client was not served in the iteration
+
+test_fastpath_lanes.cpp:592: Failure
+Expected equality of these values:
+  mainReply(b)
+    Which is: ""
+  "*2\r\n$2\r\nwl\r\n$1\r\na\r\n"
+With diff:
+@@ -1,1 +1,5 @@
+-""
++*2\r
++$2\r
++wl\r
++$1\r
++a\r\n
+
+
+test_fastpath_lanes.cpp:594: Failure
+Expected equality of these values:
+  lookupKeyRead(server.db[0], k)
+    Which is: 0x7f9067648490
+  nullptr
+    Which is: (nullptr)
+the popped list must be gone
+
+test_fastpath_lanes.cpp:596: Failure
+Expected: (infoStat("fastpath_write_serial_segments")) > (serial), actual: 0 vs 0
+the iteration must have gone serial
+
+[  FAILED  ] FastpathLanesTest.BlockingPopInTheWindowIsServedBeforeTheNextLaneEntry (0 ms)
+[ RUN      ] FastpathLanesTest.WatchInTheWindowAbortsTheExecAfterTheLaneWrite
+test_fastpath_lanes.cpp:627: Failure
+Expected: (infoStat("fastpath_write_serial_segments")) > (serial), actual: 0 vs 0
+the iteration must have gone serial
+
+[  FAILED  ] FastpathLanesTest.WatchInTheWindowAbortsTheExecAfterTheLaneWrite (0 ms)
+[----------] 2 tests from FastpathLanesTest (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 2 tests from 1 test suite ran. (4 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 2 tests, listed below:
+[  FAILED  ] FastpathLanesTest.BlockingPopInTheWindowIsServedBeforeTheNextLaneEntry
+[  FAILED  ] FastpathLanesTest.WatchInTheWindowAbortsTheExecAfterTheLaneWrite
+
+ 2 FAILED TESTS

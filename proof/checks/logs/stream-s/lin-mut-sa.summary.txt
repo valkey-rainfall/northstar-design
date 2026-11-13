@@ -1,0 +1,7 @@
+# tag=mut-sa mode=lanes port=38631 count=4 secs=10 clients=16 pipes=0 4 seed0=100 extra=--io-threads-parallel-writes-min 1000000 --staged-main-lane yes
+# n seed pipeline ops errors verdict lane_entries lane_phases stream_phases stream_execs stream_multi stream_runs stream_entries stream_cuts
+1 101 0 120386 2083 PASS 0 0 7924 7924 403 8689 8689 0
+2 102 4 194120 3225 FAIL 0 0 11260 11260 220 11708 39119 107
+3 103 0 121656 2022 PASS 0 0 7779 7779 343 8379 8379 0
+4 104 4 193876 3115 FAIL 0 0 12134 12134 151 12446 41661 74
+# pass=2 fail=2

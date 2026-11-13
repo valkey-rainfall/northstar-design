@@ -1,0 +1,7 @@
+# tag=mut-sb mode=lanes port=38632 count=4 secs=10 clients=16 pipes=0 4 seed0=100 extra=--io-threads-parallel-writes-min 1000000 --staged-main-lane yes
+# n seed pipeline ops errors verdict lane_entries lane_phases stream_phases stream_execs stream_multi stream_runs stream_entries stream_cuts
+1 101 0 driver-error
+2 102 4 driver-error
+3 103 0 driver-error
+4 104 4 driver-error
+# pass=0 fail=4

@@ -1,0 +1,93 @@
+{
+ "groups": {
+  "snap0": [
+   "snap0",
+   "snap1",
+   "snap2",
+   "snap3"
+  ],
+  "pair0": [
+   "p0",
+   "p1"
+  ]
+ },
+ "accounts": [
+  "a0",
+  "a1",
+  "a2",
+  "a3"
+ ],
+ "total": 400,
+ "keys": {
+  "regs": [
+   "r0",
+   "r1",
+   "r2",
+   "r3"
+  ],
+  "counters": [
+   "n0",
+   "n1"
+  ],
+  "snap": [
+   "snap0",
+   "snap1",
+   "snap2",
+   "snap3"
+  ],
+  "pair": [
+   "p0",
+   "p1"
+  ],
+  "accounts": [
+   "a0",
+   "a1",
+   "a2",
+   "a3"
+  ]
+ },
+ "engagement": {
+  "fastpath_clients": 0,
+  "fastpath_reads": 47086,
+  "fastpath_writes": 42005,
+  "fastpath_batches": 36777,
+  "fastpath_speculated": 312,
+  "fastpath_write_lane_phases": 25448,
+  "fastpath_write_lane_entries": 267993,
+  "fastpath_write_barriers": 10018,
+  "fastpath_write_serial_segments": 0,
+  "total_commands_processed": 250462,
+  "io_threads_active": 0,
+  "keyspace_shard_bits": 8,
+  "fastpath_clients_after": "0"
+ },
+ "ops": 188304,
+ "resp_errors": 3145,
+ "config": {
+  "port": 38510,
+  "replica_port": 0,
+  "seconds": 10.0,
+  "clients": 8,
+  "pipeline": 4,
+  "seed": 20,
+  "out": "$WORK/run-linearize/lanes/h20.jsonl"
+ },
+ "shards": {
+  "r0": 202,
+  "r1": 246,
+  "r2": 161,
+  "r3": 77,
+  "n0": 125,
+  "n1": 33,
+  "snap0": 56,
+  "snap1": 144,
+  "snap2": 72,
+  "snap3": 160,
+  "p0": 50,
+  "p1": 78,
+  "a0": 49,
+  "a1": 5,
+  "a2": 94,
+  "a3": 178
+ }
+}

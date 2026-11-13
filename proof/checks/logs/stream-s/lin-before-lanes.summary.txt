@@ -1,0 +1,7 @@
+# tag=before-lanes mode=lanes port=38610 count=4 secs=10 clients=8 pipes=0 4 seed0=0 extra=
+# n seed pipeline ops errors verdict lane_entries lane_phases stream_phases stream_execs stream_multi stream_runs stream_entries stream_cuts
+1 1 0 124537 2071 PASS 79261 24354 520 520 90 644 644 0
+2 2 4 203436 3466 PASS 233021 27383 42 42 0 42 45 0
+3 3 0 123149 2000 PASS 78762 24325 533 533 103 671 671 0
+4 4 4 203432 3470 PASS 234046 27354 45 45 0 45 49 0
+# pass=4 fail=0

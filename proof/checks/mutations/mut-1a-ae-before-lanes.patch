@@ -1,0 +1,15 @@
+diff --git a/src/staged_loop.c b/src/staged_loop.c
+index f4f7661fa..eb084768b 100644
+--- a/src/staged_loop.c
++++ b/src/staged_loop.c
+@@ -705,6 +705,10 @@ static void writePhase(aeEventLoop *el) {
+         sl_read_queued = 0;
+         processIOThreadsResponses(); /* runs the primary's commands parsed in the read phase */
+     }
++    if (ae_ready) { /* MUTATION m1a: main-path clients and the cluster bus before the batches */
++        aeProcessEvents(el, AE_FILE_EVENTS | AE_DONT_WAIT);
++        ae_ready = 0;
++    }
+     int stream = stagedStreamEligible();
+     if (stream) {
+         stagedStreamOpen();

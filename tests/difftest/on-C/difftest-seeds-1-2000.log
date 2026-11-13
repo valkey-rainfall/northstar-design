@@ -1,0 +1,14 @@
+Note: Google Test filter = FastpathDifftest.*
+[==========] Running 2 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 2 tests from FastpathDifftest
+[ RUN      ] FastpathDifftest.LanesMatchSerialExecutorOverRandomPrograms
+[       OK ] FastpathDifftest.LanesMatchSerialExecutorOverRandomPrograms (2101 ms)
+[ RUN      ] FastpathDifftest.SerialExecutorIsDeterministic
+[       OK ] FastpathDifftest.SerialExecutorIsDeterministic (97 ms)
+[----------] 2 tests from FastpathDifftest (2199 ms total)
+
+[----------] Global test environment tear-down
+[==========] 2 tests from 1 test suite ran. (2201 ms total)
+[  PASSED  ] 2 tests.
+All UNIT TESTS PASSED!

@@ -1,0 +1,67 @@
+From 8a1e6c1b4564a37c8f1360212325f56c993efef5 Mon Sep 17 00:00:00 2001
+From: Rain Valentine <rsg000@gmail.com>
+Date: Mon, 9 Nov 2026 23:55:14 +0000
+Subject: [PATCH 8/8] fastpath: keep the lane allowlist in read-only data
+
+The test-only accessor returned the array through a pointer to non-const pointers,
+which moved the 1,000-byte table from .rodata to .data in the release binary. Return
+pointer-to-const-pointer and declare the array that way.
+
+Signed-off-by: Rain Valentine <rsg000@gmail.com>
+---
+ src/fastpath.c                   | 4 ++--
+ src/fastpath.h                   | 2 +-
+ src/unit/test_fastpath_lists.cpp | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 3439d0b85..e1031010e 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -562,7 +562,7 @@ static void fpBeginLeave(fpThread *t, client *c, int state) {
+  * execution context, frozen for the phase, or a reason fpLanesAllowed turns the lanes off. Commands
+  * that draw random numbers (SPOP, SRANDMEMBER, HRANDFIELD, ZRANDMEMBER) stay off: the generators are
+  * process-wide. */
+-static const char *fp_lane_commands[] = {
++static const char *const fp_lane_commands[] = {
+     /* strings and keys */
+     "set", "setnx", "setex", "psetex", "getset", "getdel", "getex", "get", "mget", "mset",
+     "strlen", "append", "setrange", "getrange", "substr", "incr", "decr", "incrby", "decrby",
+@@ -588,7 +588,7 @@ static const char *fp_lane_commands[] = {
+ 
+ /* Unit tests: the lane allowlist (NULL-terminated) and the fast-path command gate, checked against the
+  * command table's key specs and flags. */
+-const char **testOnlyFastpathLaneCommands(void) {
++const char *const *testOnlyFastpathLaneCommands(void) {
+     return fp_lane_commands;
+ }
+ 
+diff --git a/src/fastpath.h b/src/fastpath.h
+index 084da8f4e..35dc73acd 100644
+--- a/src/fastpath.h
++++ b/src/fastpath.h
+@@ -167,7 +167,7 @@ int fastpathStagedLanesWillRun(void);
+ /* Test only: sort the next read phase's entries into nlanes lanes, as fastpathStagedPrepareLanes does
+  * with that many lane threads (0 turns the lanes off). */
+ void testOnlyFastpathSetLanes(int nlanes);
+-const char **testOnlyFastpathLaneCommands(void);
++const char *const *testOnlyFastpathLaneCommands(void);
+ int testOnlyFastpathCommandAllowed(struct serverCommand *cmd);
+ /* Thread tid (0 = main): run its lane of the current write segment. */
+ void fastpathStagedWriteLane(int tid);
+diff --git a/src/unit/test_fastpath_lists.cpp b/src/unit/test_fastpath_lists.cpp
+index c273d47c1..70951b01c 100644
+--- a/src/unit/test_fastpath_lists.cpp
++++ b/src/unit/test_fastpath_lists.cpp
+@@ -102,7 +102,7 @@ class FastpathListsTest : public ::testing::Test {
+ 
+ /* Item 4 of the proof-check list: the allowlist declares all keys. */
+ TEST_F(FastpathListsTest, LaneAllowlistDeclaresAllKeys) {
+-    const char **names = testOnlyFastpathLaneCommands();
++    const char *const *names = testOnlyFastpathLaneCommands();
+     int n = 0;
+     for (; names[n]; n++) {
+         struct serverCommand *cmd = lookupCommandByCString(names[n]);
+-- 
+2.50.1
+

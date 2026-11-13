@@ -1,0 +1,20 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 0155842e5..71a288c4c 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -3193,8 +3193,13 @@ static void fpStreamExecRun(client *ec, cmdBatch *b, fpStreamCursor *c, int max)
+     int from = c->ei;
+     client *cl = b->e[from].c;
+     int j = from;
+-    while (j < b->count && b->e[j].c == cl && j - from < max) {
+-        fpExecute(ec, b, &b->e[j]);
++    int len = 0;
++    while (from + len < b->count && b->e[from + len].c == cl && len < max) len++;
++    while (j < from + len) {
++        int k = j;
++        if (len >= 2 && j == from) k = from + 1; /* MUTATION S-a: swap the first two entries of the run */
++        else if (len >= 2 && j == from + 1) k = from;
++        fpExecute(ec, b, &b->e[k]);
+         j++;
+     }
+     c->ei = j;

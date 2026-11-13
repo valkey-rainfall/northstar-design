@@ -1,0 +1,13 @@
+Release builds (default make, -O3 -flto), x86_64, gcc 11.5:
+  C    = ceaa1101d                 4336543	 364409	3246864	7947816	 794628	wt-rel-c/src/valkey-server
+  head = 8a1e6c1b4 (proof-checks)  4337641	 364409	3246864	7948914	 794a72	wt-rel-h/src/valkey-server
+
+STAGED_CHECKS symbols in the release head (fastpathWindowOpen, fpWindowClose, kvstoreOwnTable*, kvstoreCheckOwned, fpCheckEntryUnobserved, fp_window_open, kvs_owned_*): 0
+
+Symbols only in head (test seams and test-only accessors, bytes): fp_lane_commands.lto_priv.0 1000 (renamed by LTO; the 1000-byte table 'fp_lane_commands' is only in C), sl_inline_lanes 4, testOnlyClearIOThreadReady 127, testOnlyFastpathCommandAllowed 94, testOnlyFastpathLaneCommands 6, testOnlyStagedSetOn 7, testOnlyStagedSetWorkers 23
+
+Functions the checks touch, size in C vs head (identical): blockForKeys 1029/1029, clusterProcessPacket 186/186 (+ .part.0 8473/8473), fastpathStagedExecute 1643/1643, fastpathStagedExecuteStreaming 2875/2875, fastpathStagedPrepareLanes 214/214, fastpathStagedWriteLane 5360/5360, kvstoreGetHashtable 12/12, processCommand 4425/4425, replApplyRunLane 2298/2298, watchForKey 712/712
+
+Text symbols that changed size: 17, net +322 bytes: the test-seam functions stagedRunWritePhase (+99), stagedRunLanePhase (-47), stagedRunApplyPhase (-35), testOnlyStagedStop (+32) from the cherry-picked unit-test seams, and LTO partition churn in untouched code (proceedWithSlotMigration +178, vsetBucketMemUsage_RAX +112, sentinelTryConnectionSharing +75, returnAllItemsToMainThread -56, ...).
+
+Conclusion: the checks are compiled out of the release build (no symbol, no size change in any touched function); the release delta is the unit-test seams needed to build the difftest on C.

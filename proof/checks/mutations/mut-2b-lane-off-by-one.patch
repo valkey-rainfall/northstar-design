@@ -1,0 +1,13 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 3439d0b85..b2d7465d8 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -676,7 +676,7 @@ static int fpLaneOf(client *c, struct serverCommand *cmd, robj **argv, int argc,
+     *shard = fpKeysShard(c->db, cmd, argv, argc, slot);
+     if (*shard < 0) return -1;
+     if (server.cluster_enabled && !clusterServesSlotStably(*shard)) return -1; /* main produces the redirect */
+-    return *shard % fp_nlanes;
++    return (*shard + 1) % fp_nlanes; /* MUTATION m2b */
+ }
+ 
+ #define FP_SPLIT_CHUNK (64 * 1024)

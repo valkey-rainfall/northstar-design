@@ -1,0 +1,506 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 45 and seed -5225106471772448672 with 2 workers on 2 cores with 989MB heap and 64MB offheap memory [pid: 1357321] (Linux 6.12.111-136.204.amzn2023.x86_64 amd64, Amazon.com Inc. 21.0.13 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file proof/tla/V2_nobarrier.tla
+Parsing file proof/tla/Lanes.tla
+Parsing file /tmp/Naturals.tla
+Parsing file /tmp/Sequences.tla
+Parsing file /tmp/FiniteSets.tla
+Parsing file /tmp/TLC.tla
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Lanes
+Semantic processing of module V2_nobarrier
+Starting... (2026-10-29 05:07:23)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 05:07:24.
+Progress(13) at 2026-10-29 05:07:27: 203 states generated (203 s/min), 130 distinct states found (130 ds/min), 26 states left on queue.
+Error: Invariant SerialEquivalent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 1 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 2: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 2 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "1", b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 3: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 3 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "1", b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 4: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 4 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "2", b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 5: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 5 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 6: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 6 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 7: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 7 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 8: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 8 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> "7"]
+
+State 9: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 9 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> "7"]
+
+State 10: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 10 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> NIL, d |-> NIL, c |-> "7"]
+
+State 11: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<NIL>>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 11 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 12: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 12 @@ 1 :> 1)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> NIL, d |-> NIL, c |-> NIL]
+
+State 13: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 12 @@ 1 :> 2)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "1", d |-> NIL, c |-> NIL]
+
+State 14: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", NIL>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 13 @@ 1 :> 2)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "1", d |-> NIL, c |-> "9"]
+
+State 15: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<NIL, NIL, NIL, NIL>> >>
+/\ pc = (0 :> 13 @@ 1 :> 3)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "1", d |-> NIL, c |-> "9"]
+
+State 16: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", NIL, NIL, NIL>> >>
+/\ pc = (0 :> 14 @@ 1 :> 3)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "1", d |-> NIL, c |-> "9"]
+
+State 17: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", NIL, NIL, NIL>> >>
+/\ pc = (0 :> 14 @@ 1 :> 4)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "2", d |-> NIL, c |-> "9"]
+
+State 18: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", NIL, "9", NIL>> >>
+/\ pc = (0 :> 15 @@ 1 :> 4)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "2", d |-> NIL, c |-> "9"]
+
+State 19: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<1>>,
+   <<1, 0>>,
+   <<NIL, NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", NIL, "9", NIL>> >>
+/\ pc = (0 :> 15 @@ 1 :> 5)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "2", d |-> 1, c |-> "9"]
+
+State 20: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<1>>,
+   <<1, 0>>,
+   <<"2", NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<NIL>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", NIL, "9", NIL>> >>
+/\ pc = (0 :> 15 @@ 1 :> 6)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "2", d |-> 1, c |-> "9"]
+
+State 21: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<1>>,
+   <<1, 0>>,
+   <<"2", NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<2>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", NIL, "9", NIL>> >>
+/\ pc = (0 :> 15 @@ 1 :> 7)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "2", d |-> 2, c |-> "9"]
+
+State 22: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<1>>,
+   <<1, 0>>,
+   <<"2", NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<2>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", NIL, "9", NIL>> >>
+/\ pc = (0 :> 15 @@ 1 :> 8)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "9", d |-> 2, c |-> "9"]
+
+State 23: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<1>>,
+   <<1, 0>>,
+   <<"2", NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<2>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", "9", "9", NIL>> >>
+/\ pc = (0 :> 15 @@ 1 :> 9)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "9", d |-> 2, c |-> "9"]
+
+State 24: <Next line 123, col 27 to line 123, col 55 of module Lanes>
+/\ phase = 0
+/\ tmp = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, "7", NIL, NIL, NIL, NIL>>
+/\ brep = <<NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL>>
+/\ out = << <<NIL, NIL>>,
+   <<"1", "1">>,
+   <<NIL, NIL>>,
+   <<1>>,
+   <<1, 0>>,
+   <<"2", NIL>>,
+   <<NIL>>,
+   <<"OK", NIL>>,
+   <<2>>,
+   <<"7">>,
+   <<NIL, NIL>>,
+   <<"7", "9", "9", 2>> >>
+/\ pc = (0 :> 15 @@ 1 :> 10)
+/\ kvOld = [a |-> NIL, b |-> NIL, d |-> NIL, c |-> NIL]
+/\ kv = [a |-> "7", b |-> "9", d |-> 2, c |-> "9"]
+
+806 states generated, 456 distinct states found, 9 states left on queue.
+The depth of the complete state graph search is 24.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 2 and the 95th percentile is 2).
+Finished in 09s at (2026-10-29 05:07:32)

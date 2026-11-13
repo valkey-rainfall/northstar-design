@@ -1,0 +1,8 @@
+8a1e6c1b4 fastpath: keep the lane allowlist in read-only data
+b4729b678 kvstore: check the lane memory partition at run time (STAGED_CHECKS)
+ef24a5e29 Staged loop: check the empty window at run time (make STAGED_CHECKS=yes)
+14f09593c Unit tests: check the lane allowlist and the fast-path command gate against the command table
+ac9fba21f Unit tests: port the lane differential test and the split-command lane tests to C
+4039555b1 Unit tests: run the fast path suites' server init once per process
+23b7eb2e1 Unit tests: ReplApplyTest, the replica's lane plan against the plain apply path
+0acba7e17 Unit tests: clear the IO thread ready registry when a suite ends

@@ -1,0 +1,333 @@
+From 4039555b18a47782c852dbc1ae0a525d0d88fae1 Mon Sep 17 00:00:00 2001
+From: Rain Valentine <rsg000@gmail.com>
+Date: Thu, 5 Nov 2026 17:04:59 +0000
+Subject: [PATCH 3/8] Unit tests: run the fast path suites' server init once
+ per process
+
+Port of the audit's test_server_init.hpp (Phase 8 hygiene commits
+9bb1b64bb, 8e57486a0, d050192b4, 6a6febe14 and e36c2baab) and its use
+in the fixtures of FastpathExecutorTest, FastpathStagedTest and
+AclOffloadTest.
+
+Each of these suites brings up part of the server in SetUpTestSuite with
+moduleInitModulesSystem, populateCommandTable, ACLInit and
+connTypeInitialize. Those functions run once per process: a second call
+blocks forever on the module GIL (moduleInitModulesSystem leaves it
+locked), aborts in commandAddSubcommand, breaks the ACL category table,
+or asserts in connTypeRegister. On this branch the gtest binary therefore
+hangs as soon as two of these suites run in one process, for example
+./valkey-unit-gtests --gtest_filter='FastpathExecutorTest.*:FastpathStagedTest.*'
+or --gtest_repeat=2 on one suite (checked on c8b06eb0f: both time out).
+gtest-parallel hides this by running one test per process.
+
+The helpers make the second and later calls safe (release the GIL and
+close the old module pipe, re-add the already filled command table to
+the new hashtables, register connection types and ACL categories once).
+The fixtures also delete their event loop at suite end so its epoll fd
+is not leaked per iteration.
+
+FastpathStagedTest.LanesWillRunCountsEachSegment used INCR as the
+command that is not a lane command. fpMarkLaneCommands marks the lane
+commands once per process, so after any suite that ran write lanes INCR
+is a lane command and the test fails. It now uses SETBIT, which is never
+a lane command.
+
+With this the eight fast path, poller, replication and ACL suites run
+together in one process, shuffled and repeated 8 times, with no
+failure.
+
+Signed-off-by: Rain Valentine <rsg000@gmail.com>
+---
+ src/unit/test_acl_offload.cpp       |   7 +-
+ src/unit/test_fastpath_executor.cpp |  10 ++-
+ src/unit/test_fastpath_staged.cpp   |  21 +++--
+ src/unit/test_server_init.hpp       | 127 ++++++++++++++++++++++++++++
+ 4 files changed, 150 insertions(+), 15 deletions(-)
+ create mode 100644 src/unit/test_server_init.hpp
+
+diff --git a/src/unit/test_acl_offload.cpp b/src/unit/test_acl_offload.cpp
+index fe2eca6a1..09e9d3eaf 100644
+--- a/src/unit/test_acl_offload.cpp
++++ b/src/unit/test_acl_offload.cpp
+@@ -13,6 +13,7 @@
+  * by the real-engine Tcl suite and under ASan. */
+ 
+ #include "generated_wrappers.hpp"
++#include "test_server_init.hpp"
+ 
+ #include <cstring>
+ 
+@@ -37,11 +38,11 @@ class AclOffloadTest : public ::testing::Test {
+         server.main_thread_id = pthread_self();
+         server.el = aeCreateEventLoop(64);
+         createSharedObjects();
+-        moduleInitModulesSystem();
++        unitTestInitModulesSystem();
+         server.commands = hashtableCreate(&commandSetType);
+         server.orig_commands = hashtableCreate(&commandSetType);
+-        populateCommandTable();
+-        ACLInit();
++        unitTestPopulateCommandTable();
++        unitTestACLInit();
+         server.dbnum = 1;
+         server.db = static_cast<serverDb **>(zcalloc(sizeof(serverDb *)));
+         server.db[0] = static_cast<serverDb *>(zcalloc(sizeof(serverDb)));
+diff --git a/src/unit/test_fastpath_executor.cpp b/src/unit/test_fastpath_executor.cpp
+index c35964a75..823a2bd2b 100644
+--- a/src/unit/test_fastpath_executor.cpp
++++ b/src/unit/test_fastpath_executor.cpp
+@@ -10,6 +10,7 @@
+  * cannot fault, and origin data must still be intact. */
+ 
+ #include "generated_wrappers.hpp"
++#include "test_server_init.hpp"
+ 
+ #include <arpa/inet.h>
+ #include <cstring>
+@@ -49,11 +50,11 @@ class FastpathExecutorTest : public ::testing::Test {
+         server.maxclients = 1000;
+         server.el = aeCreateEventLoop(1024);
+         createSharedObjects();
+-        moduleInitModulesSystem();
++        unitTestInitModulesSystem();
+         server.commands = hashtableCreate(&commandSetType);
+         server.orig_commands = hashtableCreate(&commandSetType);
+-        populateCommandTable();
+-        ACLInit();
++        unitTestPopulateCommandTable();
++        unitTestACLInit();
+ 
+         server.dbnum = 1;
+         server.db = static_cast<serverDb **>(zcalloc(sizeof(serverDb *)));
+@@ -83,7 +84,7 @@ class FastpathExecutorTest : public ::testing::Test {
+         server.io_threads_fast_path = 1;
+         server.io_threads_strict_offload = 1;
+         server.io_batch_commands = 16;
+-        connTypeInitialize();
++        unitTestConnTypeInitialize();
+         initSharedQueryBuf();
+         testOnlyInitIOThreadQueues();
+         fastpathInitThread(1);
+@@ -94,6 +95,7 @@ class FastpathExecutorTest : public ::testing::Test {
+         fastpathFreeThread(1);
+         testOnlyClearIOThreadReady(1);
+         testOnlyFreeIOThreadQueues();
++        unitTestDeleteEventLoop();
+     }
+ 
+     void SetUp() override {
+diff --git a/src/unit/test_fastpath_staged.cpp b/src/unit/test_fastpath_staged.cpp
+index 94b9c3766..e00e677e7 100644
+--- a/src/unit/test_fastpath_staged.cpp
++++ b/src/unit/test_fastpath_staged.cpp
+@@ -10,6 +10,7 @@
+  * the reply barrier. */
+ 
+ #include "generated_wrappers.hpp"
++#include "test_server_init.hpp"
+ 
+ #include <cstring>
+ #include <string>
+@@ -46,11 +47,11 @@ class FastpathStagedTest : public ::testing::Test {
+         server.maxclients = 1000;
+         server.el = aeCreateEventLoop(1024);
+         createSharedObjects();
+-        moduleInitModulesSystem();
++        unitTestInitModulesSystem();
+         server.commands = hashtableCreate(&commandSetType);
+         server.orig_commands = hashtableCreate(&commandSetType);
+-        populateCommandTable();
+-        ACLInit();
++        unitTestPopulateCommandTable();
++        unitTestACLInit();
+ 
+         server.dbnum = 1;
+         server.db = static_cast<serverDb **>(zcalloc(sizeof(serverDb *)));
+@@ -81,7 +82,7 @@ class FastpathStagedTest : public ::testing::Test {
+         server.io_threads_fast_path = 1;
+         server.io_threads_strict_offload = 1;
+         server.io_batch_commands = 16;
+-        connTypeInitialize();
++        unitTestConnTypeInitialize();
+         initSharedQueryBuf();
+         testOnlyInitIOThreadQueues();
+         fastpathInitThread(1);
+@@ -91,6 +92,7 @@ class FastpathStagedTest : public ::testing::Test {
+     static void TearDownTestSuite() {
+         fastpathFreeThread(1);
+         testOnlyFreeIOThreadQueues();
++        unitTestDeleteEventLoop();
+     }
+ 
+     void SetUp() override {
+@@ -381,13 +383,16 @@ TEST_F(FastpathStagedTest, LanesWillRunCountsEachSegment) {
+     int peer;
+     client *c = newStagedClient(&peer);
+     const std::string ping = "*1\r\n$4\r\nPING\r\n";
+-    const std::string barrier = "*2\r\n$4\r\nINCR\r\n$4\r\nst:w\r\n"; /* not a lane command here */
++    /* A command that is never a lane command (not in fp_lane_commands), so it is a barrier whether or
++     * not an earlier suite in this process marked the lane commands (fpMarkLaneCommands runs once per
++     * process). SETBIT that leaves a clear bit clear replies :0 every time. */
++    const std::string barrier = "*4\r\n$6\r\nSETBIT\r\n$4\r\nst:w\r\n$1\r\n0\r\n$1\r\n0\r\n";
+ 
+     /* 50 lane entries, every run between barriers 5 long. */
+     std::string req, expect;
+     for (int i = 1; i <= 10; i++) {
+         req += barrier;
+-        expect += ":" + std::to_string(i) + "\r\n";
++        expect += ":0\r\n";
+         for (int j = 0; j < 5; j++) {
+             req += ping;
+             expect += "+PONG\r\n";
+@@ -405,13 +410,13 @@ TEST_F(FastpathStagedTest, LanesWillRunCountsEachSegment) {
+     req.clear();
+     expect.clear();
+     req += barrier;
+-    expect += ":11\r\n";
++    expect += ":0\r\n";
+     for (int j = 0; j < 32; j++) {
+         req += ping;
+         expect += "+PONG\r\n";
+     }
+     req += barrier;
+-    expect += ":12\r\n";
++    expect += ":0\r\n";
+     send(peer, req);
+     testOnlyFastpathSetLanes(2);
+     readPhase();
+diff --git a/src/unit/test_server_init.hpp b/src/unit/test_server_init.hpp
+new file mode 100644
+index 000000000..f905abdd0
+--- /dev/null
++++ b/src/unit/test_server_init.hpp
+@@ -0,0 +1,127 @@
++/*
++ * Copyright (c) Valkey Contributors
++ * All rights reserved.
++ * SPDX-License-Identifier: BSD-3-Clause
++ */
++
++/* Helpers for test suites that bring up parts of the server in SetUpTestSuite.
++ *
++ * All suites run in one process, and --gtest_repeat runs SetUpTestSuite again
++ * for every iteration. Some server init functions are written to run once per
++ * process: calling them a second time deadlocks or aborts. The helpers below
++ * make the second and later calls safe. Every helper is an inline function, so
++ * its function-local static is shared by all test files (C++17 [dcl.inline]).
++ */
++
++#ifndef VALKEY_UNIT_TEST_SERVER_INIT_HPP
++#define VALKEY_UNIT_TEST_SERVER_INIT_HPP
++
++extern "C" {
++#include "allocator_defrag.h"
++#include "module.h"
++#include "server.h"
++}
++
++#include <unistd.h>
++
++/* moduleInitModulesSystem() ends by locking the module GIL. The GIL is a plain
++ * (non-recursive) mutex that the server releases only when it enters the event
++ * loop. A second call in the same process blocks forever on that lock. Release
++ * the lock taken by the previous call before initialising again. */
++inline void unitTestInitModulesSystem(void) {
++    static bool gil_locked = false;
++    static int module_pipe[2] = {-1, -1};
++    if (gil_locked) moduleReleaseGIL();
++    /* Each call opens a new server.module_pipe. The next suite's memset(&server)
++     * forgets the two fds, so without this they stay open for the rest of the
++     * process, one pair per suite per --gtest_repeat iteration. */
++    if (module_pipe[0] >= 0) {
++        close(module_pipe[0]);
++        close(module_pipe[1]);
++    }
++    moduleInitModulesSystem();
++    module_pipe[0] = server.module_pipe[0];
++    module_pipe[1] = server.module_pipe[1];
++    gil_locked = true;
++}
++
++/* aeCreateEventLoop() opens one epoll fd. A suite that creates server.el in
++ * SetUpTestSuite and never deletes it leaks that fd on every iteration, and
++ * the next suite's memset(&server) drops the pointer. Tests that build a small
++ * event loop (aeCreateEventLoop(64)) then fail once the lowest free fd is 64
++ * or more, because aeCreateFileEvent rejects fd >= setsize. Delete the loop
++ * at the end of the suite and leave server.el NULL. */
++inline void unitTestDeleteEventLoop(void) {
++    if (server.el == NULL) return;
++    aeDeleteEventLoop(server.el);
++    server.el = NULL;
++}
++
++extern "C" {
++extern struct serverCommand serverCommandTable[];
++}
++
++/* populateCommandTable() fills the static serverCommandTable entries in place
++ * (fullname, key specs, ACL id, subcommand hashtable) and adds them to
++ * server.commands and server.orig_commands. The filling step cannot run twice:
++ * commandAddSubcommand() asserts that a subcommand is not already present in
++ * the parent's subcommands_ht, so the second call aborts the process. The two
++ * hashtables, however, are cleared by every suite's memset(&server), and some
++ * suites release them in TearDownTestSuite, so they must be rebuilt.
++ *
++ * The caller creates server.commands and server.orig_commands first, as it
++ * does for populateCommandTable(). The first call runs the real function;
++ * later calls only re-add the already filled entries to the new tables. */
++inline void unitTestPopulateCommandTable(void) {
++    static bool populated = false;
++    if (!populated) {
++        populateCommandTable();
++        populated = true;
++        return;
++    }
++    for (int j = 0; serverCommandTable[j].declared_name != NULL; j++) {
++        struct serverCommand *c = serverCommandTable + j;
++        /* Same skip rule as populateCommandStructure() with sentinel_mode == 0. */
++        if (c->flags & CMD_ONLY_SENTINEL) continue;
++        serverAssert(hashtableAdd(server.commands, c));
++        serverAssert(hashtableAdd(server.orig_commands, c));
++    }
++}
++
++/* connTypeInitialize() registers each connection type in the static connTypes[]
++ * array, and connTypeRegister() asserts that the slot is still empty. A second
++ * call in the same process aborts. The registry does not live in the server
++ * struct, so memset(&server) does not clear it: register once per process. */
++inline void unitTestConnTypeInitialize(void) {
++    static bool initialized = false;
++    if (initialized) return;
++    connTypeInitialize();
++    initialized = true;
++}
++
++/* ACLInit() calls ACLInitCommandCategories(), which allocates a fresh
++ * ACLCommandCategories array but keeps the static write index
++ * nextCommandCategory. The second call therefore writes the default
++ * categories after a block of zeroed slots, so a lookup such as "+@read"
++ * stops at the first empty slot and fails, and the fourth call runs past
++ * ACL_MAX_CATEGORIES (64) and asserts. All ACL state ACLInit() creates is
++ * static (not in the server struct), so one call per process is enough. */
++inline void unitTestACLInit(void) {
++    static bool initialized = false;
++    if (initialized) return;
++    ACLInit();
++    initialized = true;
++}
++
++/* allocatorDefragInit() asserts that it has not run before (the jemalloc
++ * query keys it resolves are process state). A second call in the same
++ * process aborts, and the abort then crashes in serverLogRaw because the
++ * suite has no server.logfile. Initialise once per process. */
++inline void unitTestAllocatorDefragInit(void) {
++    static bool initialized = false;
++    if (initialized) return;
++    allocatorDefragInit();
++    initialized = true;
++}
++
++#endif
+-- 
+2.50.1
+

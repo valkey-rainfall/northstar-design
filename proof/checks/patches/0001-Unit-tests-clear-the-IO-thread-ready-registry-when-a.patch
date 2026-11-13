@@ -1,0 +1,77 @@
+From 0acba7e17a7d74e20c37f6f1d51641c4ef5d18c8 Mon Sep 17 00:00:00 2001
+From: Rain Valentine <rsg000@gmail.com>
+Date: Fri, 30 Oct 2026 06:57:01 +0000
+Subject: [PATCH 1/8] Unit tests: clear the IO thread ready registry when a
+ suite ends
+
+testOnlySetIOThreadReady() marks a slot RUNNING and raises io_ready_num,
+but nothing undid it. FastpathStagedTest marks slot 2 ready in one test
+and only frees the fast path state, so io_ready_num stayed 3 after the
+suite. In the next FastpathExecutorTest run (another suite in the same
+process, or iteration 2 of --gtest_repeat) tryPartitionClient() picked
+slot 2 by round robin: its epoll fd was still open but held none of the
+test's sockets, so EPOLL_CTL_ADD succeeded where the test expected
+EEXIST, and the client was linked into io_partition_clients[2], which is
+NULL outside a real IO thread. That is the SIGSEGV in listLinkNodeTail().
+
+Add testOnlyClearIOThreadReady(tid), the inverse of
+testOnlySetIOThreadReady(): close the epoll fd, mark the slot ABSENT and
+lower io_worker_hwm and io_ready_num. The three fast path suites call it
+for slot 1 in TearDownTestSuite and the thread-2 test calls it for slot 2.
+
+Signed-off-by: Rain Valentine <rsg000@gmail.com>
+---
+ src/io_threads.c                    | 11 +++++++++++
+ src/io_threads.h                    |  1 +
+ src/unit/test_fastpath_executor.cpp |  1 +
+ 3 files changed, 13 insertions(+)
+
+diff --git a/src/io_threads.c b/src/io_threads.c
+index 360669444..d1b88cad3 100644
+--- a/src/io_threads.c
++++ b/src/io_threads.c
+@@ -1898,6 +1898,17 @@ void testOnlySetIOThreadReady(int tid, int epfd) {
+     if (io_ready_num <= tid) io_ready_num = tid + 1;
+ }
+ 
++/* Undo testOnlySetIOThreadReady() for one slot so the next suite starts from a clean
++ * registry: a slot left RUNNING by an earlier suite would otherwise still be chosen by
++ * the partition round robin, with an epoll fd that suite closed and no client list. */
++void testOnlyClearIOThreadReady(int tid) {
++    if (io_epfd[tid] > 0) close(io_epfd[tid]);
++    io_epfd[tid] = 0;
++    atomic_store_explicit(&io_worker_state[tid], IO_WORKER_ABSENT, memory_order_release);
++    while (io_worker_hwm > 1 && ioWorkerState(io_worker_hwm - 1) == IO_WORKER_ABSENT) io_worker_hwm--;
++    if (io_ready_num > tid) io_ready_num = tid;
++}
++
+ /* Unit tests run IO-thread code on their own threads; this makes the calling thread IO thread tid. */
+ void testOnlySetCurTid(int tid) {
+     thread_id = tid;
+diff --git a/src/io_threads.h b/src/io_threads.h
+index 35c6608b7..05065100c 100644
+--- a/src/io_threads.h
++++ b/src/io_threads.h
+@@ -89,6 +89,7 @@ size_t testOnlyGetClusterIOPendingResponses(void);
+ void testOnlySetIOThreadReady(int tid, int epfd);
+ void testOnlySetIOThreadSleeping(int tid, int fd);
+ int testOnlyIOThreadSleeping(int tid);
++void testOnlyClearIOThreadReady(int tid);
+ void testOnlySetCurTid(int tid);
+ void trySendPollJobToIOThreads(void);
+ int trySendAcceptToIOThreads(connection *conn);
+diff --git a/src/unit/test_fastpath_executor.cpp b/src/unit/test_fastpath_executor.cpp
+index f2fce4da8..c35964a75 100644
+--- a/src/unit/test_fastpath_executor.cpp
++++ b/src/unit/test_fastpath_executor.cpp
+@@ -92,6 +92,7 @@ class FastpathExecutorTest : public ::testing::Test {
+ 
+     static void TearDownTestSuite() {
+         fastpathFreeThread(1);
++        testOnlyClearIOThreadReady(1);
+         testOnlyFreeIOThreadQueues();
+     }
+ 
+-- 
+2.50.1
+

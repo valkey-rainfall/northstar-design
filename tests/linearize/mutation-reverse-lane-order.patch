@@ -1,0 +1,24 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index eb3df1b5..6e125e4e 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -2093,12 +2093,13 @@ void fastpathStagedWriteLane(int tid) {
+         uint32_t s = fp_parts[p].seg;
+         fpThread *th = &fp_threads[t];
+         int *cur = &L->cursor[t];
+-        while (*cur < th->lane_n[lane]) {
+-            cmdEntry *e = th->lane_ents[lane][*cur];
+-            if (e->seg > s) break;
+-            (*cur)++;
+-            if (e->seg == s) fpLaneExecute(L, e); /* an earlier segment's entry ran serially on main */
+-        }
++        /* MUTATION (audit, linearize W-C2): run this thread's entries of segment s in REVERSE lane order. */
++        int first = *cur;
++        while (first < th->lane_n[lane] && th->lane_ents[lane][first]->seg < s) first++;
++        int last = first;
++        while (last < th->lane_n[lane] && th->lane_ents[lane][last]->seg == s) last++;
++        for (int i = last - 1; i >= first; i--) fpLaneExecute(L, th->lane_ents[lane][i]);
++        *cur = last;
+     }
+     exec_lane = 0;
+     fp_cur_lane = NULL;

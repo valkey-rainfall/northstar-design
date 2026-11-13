@@ -1,0 +1,60 @@
+==================
+WARNING: ThreadSanitizer: data race (pid=3233769)
+  Read of size 8 at 0x000000a02ce8 by main thread (mutexes: write M18):
+    #0 fastpathMutationPeekLanes src/fastpath.c:2565 (valkey-server+0x5a2d06)
+    #1 stagedRunWritePhase src/staged_loop.c:910 (valkey-server+0x5a2d06)
+    #2 stagedRunWritePhase src/staged_loop.c:897 (valkey-server+0x5a2d06)
+    #3 fpRunSegment src/fastpath.c:3031 (valkey-server+0x599204)
+    #4 fpRunSegment src/fastpath.c:3012 (valkey-server+0x59bc57)
+    #5 fpExecuteWithLanes src/fastpath.c:3092 (valkey-server+0x59bc57)
+    #6 fastpathStagedExecute src/fastpath.c:3100 (valkey-server+0x59bc57)
+    #7 writePhase src/staged_loop.c:713 (valkey-server+0x5acee4)
+    #8 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5acee4)
+    #9 stagedMain src/staged_loop.c:803 (valkey-server+0x5acee4)
+    #10 main src/server.c:8684 (valkey-server+0x45e744)
+
+  Previous write of size 8 at 0x000000a02ce8 by thread T7:
+    #0 fpLaneExecute src/fastpath.c:2432 (valkey-server+0x593e25)
+    #1 fastpathStagedWriteLane src/fastpath.c:2553 (valkey-server+0x593e25)
+    #2 ioThreadStagedLoop src/io_threads.c:1383 (valkey-server+0x57deb7)
+    #3 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57deb7)
+
+  Location is global 'fp_lanes.lto_priv.0' of size 90112 at 0x000000a02240 (valkey-server+0x000000a02ce8)
+
+  Mutex M18 (0x000000a1fec0) created at:
+    #0 pthread_mutex_lock <null> (libtsan.so.0+0x506fa)
+    #1 moduleInitModulesSystem src/module.c:13600 (valkey-server+0x600481)
+    #2 main src/server.c:8392 (valkey-server+0x45e02c)
+
+  Thread T7 'io_thd_1' (tid=3233778, running) created by main thread at:
+    #0 pthread_create <null> (libtsan.so.0+0x5c205)
+    #1 createIOThread src/io_threads.c:1568 (valkey-server+0x57fe97)
+    #2 initIOThreads src/io_threads.c:1828 (valkey-server+0x580c78)
+    #3 InitServerLast src/server.c:3649 (valkey-server+0x6d1902)
+    #4 main src/server.c:8636 (valkey-server+0x45e605)
+
+SUMMARY: ThreadSanitizer: data race src/fastpath.c:2565 in fastpathMutationPeekLanes
+==================
+ThreadSanitizer: reported 1 warnings
+==================
+WARNING: ThreadSanitizer: data race (pid=3233889)
+  Write of size 8 at 0x000000a02ce8 by thread T7:
+    #0 fpLaneExecute src/fastpath.c:2432 (valkey-server+0x593e25)
+    #1 fastpathStagedWriteLane src/fastpath.c:2553 (valkey-server+0x593e25)
+    #2 ioThreadStagedLoop src/io_threads.c:1383 (valkey-server+0x57deb7)
+    #3 IOThreadMain src/io_threads.c:1468 (valkey-server+0x57deb7)
+
+  Previous read of size 8 at 0x000000a02ce8 by main thread (mutexes: write M18):
+    #0 fastpathMutationPeekLanes src/fastpath.c:2565 (valkey-server+0x5a2d06)
+    #1 stagedRunWritePhase src/staged_loop.c:910 (valkey-server+0x5a2d06)
+    #2 stagedRunWritePhase src/staged_loop.c:897 (valkey-server+0x5a2d06)
+    #3 fpRunSegment src/fastpath.c:3031 (valkey-server+0x599204)
+    #4 fpRunSegment src/fastpath.c:3012 (valkey-server+0x59bc57)
+    #5 fpExecuteWithLanes src/fastpath.c:3092 (valkey-server+0x59bc57)
+    #6 fastpathStagedExecute src/fastpath.c:3100 (valkey-server+0x59bc57)
+    #7 writePhase src/staged_loop.c:713 (valkey-server+0x5acee4)
+    #8 stagedLoopIteration src/staged_loop.c:773 (valkey-server+0x5acee4)
+    #9 stagedMain src/staged_loop.c:803 (valkey-server+0x5acee4)
+    #10 main src/server.c:8684 (valkey-server+0x45e744)
+
+  Location is global 'fp_lanes.lto_priv.0' of size 90112 at 0x000000a02240 (valkey-server+0x000000a02ce8)

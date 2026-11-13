@@ -1,0 +1,6 @@
+[       OK ] FastpathDifftest.LanesMatchSerialExecutorOverRandomPrograms (1988 ms)
+[       OK ] FastpathDifftest.SerialExecutorIsDeterministic (96 ms)
+STREAM difftest: seeds 2000, stream entries 273572, cut runs 56153, failed 0
+[       OK ] FastpathDifftest.StreamExecutorMatchesPlainOverRandomPrograms (1456 ms)
+DIFFTEST_SEEDS=20000 --gtest_filter='FastpathDifftest.Stream*': STREAM difftest: seeds 20000, stream entries 2719064, cut runs 558036, failed 0 (OK, 14644 ms)
+--gtest_filter='Fastpath*:ReplApply*' --gtest_shuffle: 28 tests PASSED

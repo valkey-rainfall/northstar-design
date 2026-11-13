@@ -1,0 +1,1 @@
+case merge: clients 8 rounds 200 differences 0; {'fastpath_batches': '1609', 'fastpath_clients': '9', 'fastpath_speculated': '0', 'fastpath_writes': '1627', 'staged_epoll_thread': '0', 'staged_iterations': '1562', 'staged_main_lane': '1'}

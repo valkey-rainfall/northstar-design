@@ -1,0 +1,229 @@
+From ef24a5e29eda93d1b0a877f3a79e7eb7447583b7 Mon Sep 17 00:00:00 2001
+From: Rain Valentine <rsg000@gmail.com>
+Date: Mon, 9 Nov 2026 23:02:18 +0000
+Subject: [PATCH 6/8] Staged loop: check the empty window at run time (make
+ STAGED_CHECKS=yes)
+
+A new build switch, STAGED_CHECKS=yes, compiles in stagedCheck(), a serverAssert
+that is absent from every other build. The first checks cover the empty window
+of the design (4.7): from the sampling of the observer sets before READ until
+the write step has run the batches, fastpathWindowOpen() is true, and
+
+- processCommand refuses a client command that is neither an executor's entry
+  nor the re-execution of a client a barrier entry woke from a key block,
+- clusterProcessPacket refuses a cluster bus packet,
+- watchForKey refuses a new watch,
+- blockForKeys refuses a new block, except a woken client blocking again on
+  the keys it already held,
+- fpLaneExecute re-checks that none of the entry's keys is watched or blocked
+  on when its lane runs it, which is the fact the classification relied on.
+
+The woken-client exception is stock behaviour: the server serves a client
+blocked on a key right after the command that readied it, so the command runs
+at the barrier entry's position in T.
+
+Signed-off-by: Rain Valentine <rsg000@gmail.com>
+---
+ src/Makefile         |  5 +++++
+ src/blocked.c        |  4 ++++
+ src/cluster_legacy.c |  1 +
+ src/fastpath.c       | 40 ++++++++++++++++++++++++++++++++++++++++
+ src/fastpath.h       |  3 +++
+ src/multi.c          |  2 ++
+ src/server.c         |  3 +++
+ src/server.h         |  8 ++++++++
+ src/staged_loop.c    |  3 +++
+ 9 files changed, 69 insertions(+)
+
+diff --git a/src/Makefile b/src/Makefile
+index e924828df..76d0cc282 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -137,6 +137,11 @@ ifeq ($(DEBUG_FORCE_DEFRAG), yes)
+ 	SERVER_CFLAGS +=-DHAVE_DEFRAG -DDEBUG_FORCE_DEFRAG
+ endif
+ 
++# Run-time checks of the staged loop's invariants (stagedCheck in server.h). Debug builds only.
++ifeq ($(STAGED_CHECKS), yes)
++	SERVER_CFLAGS +=-DSTAGED_CHECKS
++endif
++
+ FINAL_CFLAGS=$(STD) $(WARN) $(OPT) $(DEBUG) $(CFLAGS) $(SERVER_CFLAGS) $(CPPFLAGS)
+ FINAL_LDFLAGS=$(LDFLAGS) $(OPT) $(SERVER_LDFLAGS) $(DEBUG)
+ FINAL_LIBS=-lm
+diff --git a/src/blocked.c b/src/blocked.c
+index 467ec14d3..2efc1f7b4 100644
+--- a/src/blocked.c
++++ b/src/blocked.c
+@@ -475,6 +475,10 @@ void blockForKeys(client *c, int btype, robj **keys, int numkeys, mstime_t timeo
+     list *l;
+     int j;
+ 
++    /* Inside the empty window the blocked set only shrinks, except for a woken client that blocks again
++     * on the keys it was already blocked on, which were observed when the iteration was classified. */
++    stagedCheck(!fastpathWindowOpen() || c->flag.reexecuting_command);
++
+     initClientBlockingState(c);
+ 
+     if (!c->flag.reexecuting_command) {
+diff --git a/src/cluster_legacy.c b/src/cluster_legacy.c
+index 89ae949c4..1949e7a14 100644
+--- a/src/cluster_legacy.c
++++ b/src/cluster_legacy.c
+@@ -4101,6 +4101,7 @@ static inline int clusterExtractSlotFromWord(uint64_t *slot_word, size_t slot_wo
+  * processing lead to some inconsistency error (for instance a PONG
+  * received from the wrong sender ID). */
+ int clusterProcessPacket(clusterLink *link) {
++    stagedCheck(!fastpathWindowOpen()); /* the empty window, design 4.7 */
+     /* Validate that the packet is well-formed */
+     if (!clusterIsValidPacket(link)) {
+         clusterMsgHeader *hdr = (clusterMsgHeader *)link->rcvbuf;
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 44221b03b..b7f6c0fe0 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -210,6 +210,23 @@ static int fp_nlanes = 0;     /* lanes of this iteration */
+ static int fp_lane_main = 0;  /* main runs lane 0, IO thread i lane i; otherwise IO thread i lane i - 1 */
+ static int fp_replies_deferred = 0; /* the last iteration's replies go out in this read phase */
+ 
++#ifdef STAGED_CHECKS
++/* The empty window (design 4.7): from the sampling of the observer sets before READ until the write
++ * step has run the batches. While it is open, main runs no command of a real client (only executors
++ * run, through fpExecute) and no cluster bus packet, and no key becomes watched or blocked on; so the
++ * facts an entry was classified under in READ still hold when its lane runs it. The checks are the
++ * stagedCheck calls in processCommand, clusterProcessPacket, watchForKey and blockForKeys. */
++static int fp_window_open = 0;
++
++int fastpathWindowOpen(void) {
++    return fp_window_open;
++}
++
++void fastpathWindowClose(void) {
++    fp_window_open = 0;
++}
++#endif
++
+ /* Main, between phases, once no reply points into the lane arenas. */
+ static void fpResetLaneArenas(void) {
+     for (int l = 0; l < FP_MAX_LANES; l++) {
+@@ -2022,6 +2039,9 @@ void fastpathStagedPrepareLanes(void) {
+     fp_lanes_iter = allowed;
+     fp_check_blocked = fpBlockedOnKeys();
+     fp_check_watched = server.watching_clients > 0;
++#ifdef STAGED_CHECKS
++    if (fpDepth() == 0) fp_window_open = allowed; /* a nested iteration never opens one */
++#endif
+     /* The previous iteration's replies were delivered in its reply phase, or are delivered from the
+      * lane arenas in this read phase, which then resets them (fastpathStagedDeferredDelivered). */
+     if (!fp_replies_deferred) fpResetLaneArenas();
+@@ -2344,6 +2364,23 @@ static void fpLaneCopyPartArgs(fpLane *L, fpPart *pt) {
+     pt->largs_len = L->largs_used - pt->largs_off;
+ }
+ 
++#ifdef STAGED_CHECKS
++/* Lane thread: the facts the entry was classified under in READ still hold now that its lane runs it:
++ * none of its keys is watched or blocked on (design 4.7). Main waits at the barrier and the dicts are
++ * not rehashing while lanes run, so the lookups only read. */
++static void fpCheckEntryUnobserved(cmdEntry *e) {
++    if (!e->cmd || (e->read_flags & READ_FLAGS_BAD_ARITY)) return;
++    getKeysResult result;
++    initGetKeysResult(&result);
++    int n = getKeysFromCommand(e->cmd, e->argv, e->argc, &result);
++    for (int i = 0; i < n; i++) {
++        robj *k = e->argv[result.keys[i].pos];
++        stagedCheck(!dictFind(e->db->blocking_keys, k) && !dictFind(e->db->watched_keys, k));
++    }
++    getKeysFreeResult(&result);
++}
++#endif
++
+ /* Lane thread: execute one entry on the lane's executor, its reply into the lane arena. */
+ static void fpLaneExecute(fpLane *L, cmdEntry *e) {
+     client *ec = L->ec;
+@@ -2351,6 +2388,9 @@ static void fpLaneExecute(fpLane *L, cmdEntry *e) {
+     size_t saved_usable = ec->buf_usable_size;
+ 
+     if (fpControlDetaching(e->control)) goto release_argv; /* no reply: main is closing it */
++#ifdef STAGED_CHECKS
++    fpCheckEntryUnobserved(e);
++#endif
+ 
+     ec->user = e->origin.principal;
+     ec->flag.authenticated = ec->flag.ever_authenticated = e->origin.authenticated;
+diff --git a/src/fastpath.h b/src/fastpath.h
+index 084da8f4e..3a6521ec2 100644
+--- a/src/fastpath.h
++++ b/src/fastpath.h
+@@ -164,6 +164,9 @@ const char *fastpathParallelVetoName(int veto);
+ void fastpathStagedPrepareLanes(void);
+ /* Main, after the read phase: the write phase will run lane phases on the IO threads. */
+ int fastpathStagedLanesWillRun(void);
++#ifdef STAGED_CHECKS
++void fastpathWindowClose(void);
++#endif
+ /* Test only: sort the next read phase's entries into nlanes lanes, as fastpathStagedPrepareLanes does
+  * with that many lane threads (0 turns the lanes off). */
+ void testOnlyFastpathSetLanes(int nlanes);
+diff --git a/src/multi.c b/src/multi.c
+index a12a147fd..ce3127ef3 100644
+--- a/src/multi.c
++++ b/src/multi.c
+@@ -490,6 +490,8 @@ void watchForKey(client *c, robj *key) {
+     list *clients = NULL;
+     watchedKey *wk;
+ 
++    stagedCheck(!fastpathWindowOpen()); /* the watched set only shrinks inside the empty window */
++
+     if (listLength(&c->mstate->watched_keys) == 0) server.watching_clients++;
+ 
+     /* Lazily allocate the per-db hashtable array. */
+diff --git a/src/server.c b/src/server.c
+index 078a2a0b9..6e9bdf41b 100644
+--- a/src/server.c
++++ b/src/server.c
+@@ -4957,6 +4957,9 @@ void unprepareCommand(client *c) {
+  * if C_ERR is returned the client was destroyed (i.e. after QUIT). */
+ int processCommand(client *c) {
+     serverAssert(!c->flag.blocked && !c->flag.unblocked);
++    /* The empty window (design 4.7): only executors run here, plus the clients a barrier entry woke
++     * from a key block, which the stock server also serves right after the command that readied the key. */
++    stagedCheck(!fastpathWindowOpen() || c->flag.executor || c->flag.reexecuting_command);
+ 
+     if (!scriptIsTimedout()) {
+         /* Both EXEC and scripts call call() directly so there should be
+diff --git a/src/server.h b/src/server.h
+index fdbb1e1ab..b67495614 100644
+--- a/src/server.h
++++ b/src/server.h
+@@ -751,6 +751,14 @@ typedef enum {
+  * when the server config 'enable-debug-assert' is true. This is useful for adding
+  * assertions that are too computationally expensive or risky to run in normal
+  * operation, but are valuable for debugging or testing. */
++/* Checks of the staged loop's invariants (the empty window, the lane memory partition). Compiled in
++ * with `make STAGED_CHECKS=yes`; in every other build the macro and its argument are gone. */
++#ifdef STAGED_CHECKS
++#define stagedCheck(...) serverAssert(__VA_ARGS__)
++int fastpathWindowOpen(void); /* fastpath.c: inside this iteration's empty window (4.7) */
++#else
++#define stagedCheck(...) ((void)0)
++#endif
+ #define debugServerAssert(...) (server.enable_debug_assert ? serverAssert(__VA_ARGS__) : (void)0)
+ #define debugServerAssertWithInfo(...) (server.enable_debug_assert ? serverAssertWithInfo(__VA_ARGS__) : (void)0)
+ 
+diff --git a/src/staged_loop.c b/src/staged_loop.c
+index 864ce5b49..f4f7661fa 100644
+--- a/src/staged_loop.c
++++ b/src/staged_loop.c
+@@ -714,6 +714,9 @@ static void writePhase(aeEventLoop *el) {
+     }
+     uint64_t t1 = stagedNowNs();
+     sl_main_ns[SL_T_EXEC] += t1 - t0;
++#ifdef STAGED_CHECKS
++    fastpathWindowClose(); /* the batches ran; main-path clients and the cluster bus come next */
++#endif
+     /* Close the stream (wait for the workers to finish delivering) before main does anything that
+      * reads worker-owned client state or opens another phase. A nested iteration inside exec already
+      * aborted and closed it through stagedRunPhase. */
+-- 
+2.50.1
+

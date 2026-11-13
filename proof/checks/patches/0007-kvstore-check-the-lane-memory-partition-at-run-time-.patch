@@ -1,0 +1,343 @@
+From b4729b678d50252befb10eae00f6a617814e213d Mon Sep 17 00:00:00 2001
+From: Rain Valentine <rsg000@gmail.com>
+Date: Mon, 9 Nov 2026 23:29:46 +0000
+Subject: [PATCH 7/8] kvstore: check the lane memory partition at run time
+ (STAGED_CHECKS)
+
+While a kvstore is in concurrent mode (a WRITE, APPLY or MAINT phase), every
+access to one of its tables goes through kvstoreGetHashtable or its Ref
+variant, which now asserts that the calling thread claimed that table for the
+phase: a write or apply lane claims every table with didx % nlanes == lane
+(fastpathStagedWriteLane, the replica plan and apply lanes), a MAINT unit
+claims its one table. Main while it waits at the barrier, an IO thread's inbox
+job, or a lane reaching a key outside its partition all fail the check. This
+is obligation O5 of the proof (the per-partition tables are a memory
+partition) checked on every table access instead of assumed.
+
+The empty-window flag now closes at the end of the two batch executors
+instead of in writePhase, so the unit-test harnesses that drive the halves
+themselves close it too. The kvstore unit tests that play a lane on the test
+thread claim the tables they touch. The unit Makefile passes STAGED_CHECKS to
+the C++ side for that.
+
+Signed-off-by: Rain Valentine <rsg000@gmail.com>
+---
+ src/Makefile              |  6 +++++-
+ src/fastpath.c            | 22 +++++++++++++++++++---
+ src/fastpath.h            |  3 ---
+ src/kvstore.c             | 26 ++++++++++++++++++++++++++
+ src/kvstore.h             | 13 +++++++++++++
+ src/maint.c               |  2 ++
+ src/repl_apply.c          |  4 ++++
+ src/staged_loop.c         |  3 ---
+ src/unit/Makefile         |  5 +++++
+ src/unit/test_kvstore.cpp |  7 +++++++
+ 10 files changed, 81 insertions(+), 10 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index 76d0cc282..03015bd38 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -137,10 +137,14 @@ ifeq ($(DEBUG_FORCE_DEFRAG), yes)
+ 	SERVER_CFLAGS +=-DHAVE_DEFRAG -DDEBUG_FORCE_DEFRAG
+ endif
+ 
+-# Run-time checks of the staged loop's invariants (stagedCheck in server.h). Debug builds only.
++# Run-time checks of the staged loop's invariants (stagedCheck in server.h). Debug builds only. Like
++# the other settings it stays in .make-settings until `make distclean`; added once, so a rebuild with
++# the same settings does not change FINAL_CFLAGS.
+ ifeq ($(STAGED_CHECKS), yes)
++ifeq (,$(findstring -DSTAGED_CHECKS,$(SERVER_CFLAGS)))
+ 	SERVER_CFLAGS +=-DSTAGED_CHECKS
+ endif
++endif
+ 
+ FINAL_CFLAGS=$(STD) $(WARN) $(OPT) $(DEBUG) $(CFLAGS) $(SERVER_CFLAGS) $(CPPFLAGS)
+ FINAL_LDFLAGS=$(LDFLAGS) $(OPT) $(SERVER_LDFLAGS) $(DEBUG)
+diff --git a/src/fastpath.c b/src/fastpath.c
+index b7f6c0fe0..3439d0b85 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -222,9 +222,14 @@ int fastpathWindowOpen(void) {
+     return fp_window_open;
+ }
+ 
+-void fastpathWindowClose(void) {
++/* Main, when the write step's batch execution ends: main-path clients and the cluster bus may run
++ * from here on. Here rather than in the loop, so the unit-test harnesses that drive the two halves
++ * themselves close it too. */
++static void fpWindowClose(void) {
+     fp_window_open = 0;
+ }
++#else
++#define fpWindowClose() ((void)0)
+ #endif
+ 
+ /* Main, between phases, once no reply points into the lane arenas. */
+@@ -2490,6 +2495,7 @@ void fastpathStagedWriteLane(int tid) {
+     ectx->cmd_time_snapshot = fp_phase_time;
+     fp_cur_lane = L;
+     exec_lane = 1;
++    KVSTORE_OWN_TABLES(fp_nlanes, lane); /* the memory partition: lane l owns the tables l, l + n, ... */
+     if (L->frames) sdsclear(L->frames); /* main fed the previous phase's frames in its merge */
+     L->largs_used = 0;                  /* and logged the previous phase's split commands */
+     /* The lane's entries of this phase, in T order, so their keys can be prefetched ahead of them. */
+@@ -2547,6 +2553,7 @@ void fastpathStagedWriteLane(int tid) {
+         for (; i < end; i++) fpLaneExecute(L, L->run[i]);
+     }
+     if (use_prefetch) prefetchLaneBatchUse(NULL);
++    KVSTORE_OWN_TABLES(0, -1);
+     exec_lane = 0;
+     fp_cur_lane = NULL;
+     ectx = saved;
+@@ -3082,7 +3089,11 @@ static int fpExecuteWithLanes(void) {
+ /* Main, write phase: execute every batch the read phase published, filling each entry's reply. */
+ int fastpathStagedExecute(void) {
+     int d = fpDepth();
+-    if (d == 0 && fp_lanes_iter) return fpExecuteWithLanes();
++    if (d == 0 && fp_lanes_iter) {
++        int n = fpExecuteWithLanes();
++        fpWindowClose();
++        return n;
++    }
+     int total = 0;
+     int use_prefetch = prefetchBatchEnabled() && !ProcessingEventsWhileBlocked;
+     int paused = isPausedActions(PAUSE_ACTION_CLIENT_ALL | PAUSE_ACTION_CLIENT_WRITE);
+@@ -3105,6 +3116,7 @@ int fastpathStagedExecute(void) {
+             total += b->count;
+         }
+     }
++    if (d == 0) fpWindowClose();
+     return total;
+ }
+ 
+@@ -3249,7 +3261,10 @@ int fastpathStagedExecuteStreaming(void) {
+         ecs[n] = fpExecutor(tid);
+         n++;
+     }
+-    if (n == 0) return 0;
++    if (n == 0) {
++        if (d == 0) fpWindowClose();
++        return 0;
++    }
+ 
+     /* Entries main executes for one thread between publishes. */
+     const int chunk = 16;
+@@ -3300,6 +3315,7 @@ int fastpathStagedExecuteStreaming(void) {
+         ecs[i]->origin = NULL;
+         clientSetUser(ecs[i], DefaultUser, 0); /* never keep a principal that may retire */
+     }
++    if (d == 0) fpWindowClose();
+     return total;
+ }
+ 
+diff --git a/src/fastpath.h b/src/fastpath.h
+index 3a6521ec2..084da8f4e 100644
+--- a/src/fastpath.h
++++ b/src/fastpath.h
+@@ -164,9 +164,6 @@ const char *fastpathParallelVetoName(int veto);
+ void fastpathStagedPrepareLanes(void);
+ /* Main, after the read phase: the write phase will run lane phases on the IO threads. */
+ int fastpathStagedLanesWillRun(void);
+-#ifdef STAGED_CHECKS
+-void fastpathWindowClose(void);
+-#endif
+ /* Test only: sort the next read phase's entries into nlanes lanes, as fastpathStagedPrepareLanes does
+  * with that many lane threads (0 turns the lanes off). */
+ void testOnlyFastpathSetLanes(int nlanes);
+diff --git a/src/kvstore.c b/src/kvstore.c
+index ea59b5a67..f203b2c55 100644
+--- a/src/kvstore.c
++++ b/src/kvstore.c
+@@ -147,13 +147,38 @@ hashtableType intHashtableType = {.instant_rehashing = 1};
+ /*** Helpers **********************/
+ /**********************************/
+ 
++#ifdef STAGED_CHECKS
++/* The thread's claim on the tables of kvstores in concurrent mode (kvstore.h). */
++static _Thread_local int kvs_owned_mod = 0, kvs_owned_lane = -1, kvs_owned_only = -1;
++
++void kvstoreOwnTables(int mod, int lane) {
++    kvs_owned_mod = mod;
++    kvs_owned_lane = lane;
++}
++
++void kvstoreOwnTable(int didx) {
++    kvs_owned_only = didx;
++}
++
++/* Every access to a table goes through here. The memory partition of the lane phase: a table of a
++ * kvstore in concurrent mode is touched only by the thread that owns it. */
++static inline void kvstoreCheckOwned(kvstore *kvs, int didx) {
++    if (!kvstoreConcurrent(kvs)) return;
++    assert((kvs_owned_mod > 0 && didx % kvs_owned_mod == kvs_owned_lane) || didx == kvs_owned_only);
++}
++#else
++#define kvstoreCheckOwned(kvs, didx) ((void)0)
++#endif
++
+ /* Get the hash table pointer based on hashtable-index.
+  * May be NULL if no keys have been added. */
+ hashtable *kvstoreGetHashtable(kvstore *kvs, int didx) {
++    kvstoreCheckOwned(kvs, didx);
+     return kvs->hashtables[didx];
+ }
+ 
+ static hashtable **kvstoreGetHashtableRef(kvstore *kvs, int didx) {
++    kvstoreCheckOwned(kvs, didx);
+     return &kvs->hashtables[didx];
+ }
+ 
+@@ -789,6 +814,7 @@ static hashtable *kvstoreIteratorNextHashtable(kvstoreIterator *kvs_it) {
+     if (kvs_it->next_didx != KVSTORE_INDEX_NOT_FOUND) {
+         kvs_it->next_didx = kvstoreGetNextNonEmptyHashtableIndex(kvs_it->kvs, kvs_it->didx);
+     }
++    kvstoreCheckOwned(kvs_it->kvs, kvs_it->didx);
+     return kvs_it->kvs->hashtables[kvs_it->didx];
+ }
+ 
+diff --git a/src/kvstore.h b/src/kvstore.h
+index 18609954f..e14737a51 100644
+--- a/src/kvstore.h
++++ b/src/kvstore.h
+@@ -22,6 +22,19 @@ typedef void (*kvstoreScanFunction)(void *privdata, void *entry, int didx);
+ /* Main, outside lane phases: let threads mutate distinct hashtables of kvs concurrently (on), or end
+  * that after the threads joined (off), then call kvstoreReconcile. Other kvstores are unaffected. */
+ void kvstoreSetConcurrent(kvstore *kvs, int on);
++/* STAGED_CHECKS builds: while a kvstore is in concurrent mode, a thread may touch only the tables it
++ * claimed for the phase: every table with didx % mod == lane (a write or apply lane), or one table
++ * (a MAINT unit). mod 0 or didx -1 releases the claim. Any other access, by a lane, by main or by an
++ * IO thread's inbox job, is a memory-partition violation and asserts. Absent from other builds. */
++#ifdef STAGED_CHECKS
++void kvstoreOwnTables(int mod, int lane);
++void kvstoreOwnTable(int didx);
++#define KVSTORE_OWN_TABLES(mod, lane) kvstoreOwnTables(mod, lane)
++#define KVSTORE_OWN_TABLE(didx) kvstoreOwnTable(didx)
++#else
++#define KVSTORE_OWN_TABLES(mod, lane) ((void)0)
++#define KVSTORE_OWN_TABLE(didx) ((void)0)
++#endif
+ kvstore *kvstoreCreate(hashtableType *type, int num_hashtables_bits, int flags);
+ void kvstoreEmpty(kvstore *kvs, void(callback)(hashtable *));
+ void kvstoreRelease(kvstore *kvs);
+diff --git a/src/maint.c b/src/maint.c
+index fda804b08..8b229c13e 100644
+--- a/src/maint.c
++++ b/src/maint.c
+@@ -204,6 +204,7 @@ static void maintNoteCut(int claim_index) {
+ /* Run every requested job on one unit as thread tid, honoring tid's remaining per-job budget. */
+ static void maintRunUnit(int tid, int claim_index, const maintUnit *u, uint64_t remain_us[MAINT_JOB_COUNT]) {
+     serverDb *db = server.db[u->dbid];
++    KVSTORE_OWN_TABLE(u->didx); /* the memory partition: this unit's table of every kvstore of its db */
+ 
+     /* A unit claimed after this thread's EXPIRE budget ran out gets no expiry: the next phase starts here. */
+     if (mt_requested[MAINT_JOB_EXPIRE] && remain_us[MAINT_JOB_EXPIRE] == 0 &&
+@@ -273,6 +274,7 @@ static void maintLane(int tid) {
+         int i = atomic_fetch_add_explicit(&mt_cursor, 1, memory_order_relaxed);
+         if (i >= mt_units_len) break;
+         maintRunUnit(tid, i, &mt_units[(mt_start + i) % mt_units_len], remain_us);
++        KVSTORE_OWN_TABLE(-1);
+         if (mt_requested[MAINT_JOB_RESIZE]) continue;
+         int left = 0;
+         for (int j = 0; j < MAINT_JOB_COUNT; j++)
+diff --git a/src/repl_apply.c b/src/repl_apply.c
+index 7c9e038ca..2b4fff968 100644
+--- a/src/repl_apply.c
++++ b/src/repl_apply.c
+@@ -381,6 +381,7 @@ static void rpRunLane(int lane) {
+             if (seg < rp.seg) continue; /* its segment ran on main */
+             if (!entered) {
+                 fastpathStreamLaneEnter(lane);
++                KVSTORE_OWN_TABLES(rp.nlanes, lane);
+                 repl_apply_plan_lane = 1;
+                 entered = 1;
+             }
+@@ -399,6 +400,7 @@ static void rpRunLane(int lane) {
+ done:
+     if (entered) {
+         repl_apply_plan_lane = 0;
++        KVSTORE_OWN_TABLES(0, -1);
+         fastpathStreamLaneLeave();
+     }
+ }
+@@ -708,6 +710,7 @@ void replApplyRunLane(int tid) {
+     replApplyLane *l = &ra_lanes[lane];
+     if (!l->len) return;
+     repl_apply_in_lane = 1;
++    KVSTORE_OWN_TABLES(ra_nlanes, lane);
+     monotime start = getMonotonicUs();
+     int slot_stats = server.cluster_enabled && server.cluster_slot_stats_enabled;
+     int histogram = server.latency_tracking_enabled;
+@@ -755,6 +758,7 @@ void replApplyRunLane(int tid) {
+         }
+     }
+     l->usec = getMonotonicUs() - start;
++    KVSTORE_OWN_TABLES(0, -1);
+     repl_apply_in_lane = 0;
+ }
+ 
+diff --git a/src/staged_loop.c b/src/staged_loop.c
+index f4f7661fa..864ce5b49 100644
+--- a/src/staged_loop.c
++++ b/src/staged_loop.c
+@@ -714,9 +714,6 @@ static void writePhase(aeEventLoop *el) {
+     }
+     uint64_t t1 = stagedNowNs();
+     sl_main_ns[SL_T_EXEC] += t1 - t0;
+-#ifdef STAGED_CHECKS
+-    fastpathWindowClose(); /* the batches ran; main-path clients and the cluster bus come next */
+-#endif
+     /* Close the stream (wait for the workers to finish delivering) before main does anything that
+      * reads worker-owned client state or opens another phase. A nested iteration inside exec already
+      * aborted and closed it through stagedRunPhase. */
+diff --git a/src/unit/Makefile b/src/unit/Makefile
+index 8629ebf2e..787a0b159 100644
+--- a/src/unit/Makefile
++++ b/src/unit/Makefile
+@@ -88,6 +88,11 @@ ifdef FORCE_RUN_SKIPPED_TESTS
+ 	TEST_CFLAGS+=-DFORCE_RUN_SKIPPED_TESTS
+ endif
+ 
++# The server's invariant checks (src/Makefile): a test that plays a lane claims its tables.
++ifeq ($(STAGED_CHECKS), yes)
++	TEST_CFLAGS+=-DSTAGED_CHECKS
++endif
++
+ # Track compilation flags to force rebuild when they change
+ .flags: FORCE
+ 	@echo '$(TEST_CFLAGS)' | cmp -s - $@ || echo '$(TEST_CFLAGS)' > $@
+diff --git a/src/unit/test_kvstore.cpp b/src/unit/test_kvstore.cpp
+index dd1611b8b..d33fa1ca9 100644
+--- a/src/unit/test_kvstore.cpp
++++ b/src/unit/test_kvstore.cpp
+@@ -45,6 +45,11 @@ char *stringFromInt(int value) {
+ 
+ class KvstoreTest : public ::testing::Test {
+   protected:
++    /* The tests that drive concurrent mode from this thread are its only lane: claim every table
++     * (didx % 1 == 0) for the STAGED_CHECKS memory-partition check. */
++    void SetUp() override { KVSTORE_OWN_TABLES(1, 0); }
++    void TearDown() override { KVSTORE_OWN_TABLES(0, -1); }
++
+     static void SetUpTestSuite() {
+         monotonicInit();
+ 
+@@ -257,6 +262,7 @@ char *tableKey(int didx, int n) {
+ /* Insert keys_per_table keys into each owned table, delete every third, then rehash to completion. */
+ void runTableWork(kvstore *kvs, int first, int last, int kpt) {
+     for (int didx = first; didx <= last; didx++) {
++        KVSTORE_OWN_TABLE(didx); /* this thread is the table's lane for the phase (STAGED_CHECKS) */
+         for (int n = 0; n < kpt; n++) kvstoreHashtableAdd(kvs, didx, tableKey(didx, n));
+         for (int n = 0; n < kpt; n += 3) {
+             void *popped = nullptr;
+@@ -267,6 +273,7 @@ void runTableWork(kvstore *kvs, int first, int last, int kpt) {
+         kvstoreTryResizeHashtable(kvs, didx);
+         while (kvstoreRehashHashtable(kvs, didx, 1000) > 0) {
+         }
++        KVSTORE_OWN_TABLE(-1);
+     }
+ }
+ 
+-- 
+2.50.1
+

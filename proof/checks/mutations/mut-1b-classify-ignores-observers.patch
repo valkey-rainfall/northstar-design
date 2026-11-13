@@ -1,0 +1,22 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index b7f6c0fe0..0da9e8909 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -625,7 +625,7 @@ static int fpKeyObserved(serverDb *db, robj *key) {
+ /* IO thread: the keyspace hashtable of every key the command declares (the parser's slot in cluster
+  * mode), or -1 when it has none, they are in several, or one is observed (fpKeyObserved). */
+ static int fpKeysShard(serverDb *db, struct serverCommand *cmd, robj **argv, int argc, int slot) {
+-    int checks = fp_check_blocked || fp_check_watched;
++    int checks = 0; /* MUTATION m1b: observers ignored at classification */
+     if (cmd->proc == setCommand || cmd->proc == getCommand) {
+         if (argc < 2 || (checks && fpKeyObserved(db, argv[1]))) return -1;
+         return server.cluster_enabled ? slot : getKVStoreIndexForKey(objectGetVal(argv[1]));
+@@ -708,7 +708,7 @@ static int fpTrySplit(fpThread *t, cmdEntry *e, client *c) {
+     if (mset && (e->argc - 1) % 2) return 0; /* the arity error comes from main */
+     int nkeys = (e->argc - 1) / step;
+     if (nkeys < 2 || !fpLaneAuthOk(c, e->read_flags)) return 0;
+-    int checks = fp_check_blocked || fp_check_watched;
++    int checks = 0; /* MUTATION m1b: observers ignored at classification */
+     uint8_t *keypart = fpSplitAlloc(t, (size_t)nkeys);
+     int count[FP_MAX_LANES];
+     int8_t part_of[FP_MAX_LANES];

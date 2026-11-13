@@ -1,0 +1,9 @@
+# tag=f2-min32 mode=lanes port=38622 count=6 secs=10 clients=8 pipes=0 2 3 seed0=200 extra=--io-threads-parallel-writes-min 32 --staged-main-lane yes
+# n seed pipeline ops errors verdict lane_entries lane_phases stream_phases stream_execs stream_multi stream_runs stream_entries stream_cuts
+1 201 0 118783 2030 PASS 0 0 7347 7347 811 8862 8862 0
+2 202 2 155502 2707 PASS 0 0 13603 13603 1618 16859 31148 140
+3 203 3 177312 3005 PASS 151 4 12380 12380 877 14301 37445 259
+4 204 0 121301 2153 PASS 0 0 6899 6899 861 8646 8646 0
+5 205 2 160140 2683 PASS 0 0 13245 13245 519 14253 26450 32
+6 206 3 170490 2832 PASS 413 12 11305 11305 1029 14161 36750 413
+# pass=6 fail=0

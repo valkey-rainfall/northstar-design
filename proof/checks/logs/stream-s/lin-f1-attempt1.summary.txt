@@ -1,0 +1,5 @@
+# tag=f1-min1e6 mode=lanes port=38621 count=6 secs=10 clients=16 pipes=0 4 16 seed0=100 extra=--io-threads-parallel-writes-min 1000000 --staged-main-lane yes
+# n seed pipeline ops errors verdict lane_entries lane_phases stream_phases stream_execs stream_multi stream_runs stream_entries stream_cuts
+1 101 0 118617 2072 PASS 0 0 7014 7014 461 7863 7863 0
+2 102 4 193680 3215 PASS 0 0 10139 10139 215 10549 35341 99
+h03 (pipeline 16): driver finished (ops 237360), checker.py killed by the outer 1500 s command timeout before a verdict

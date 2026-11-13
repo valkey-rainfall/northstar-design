@@ -1,0 +1,3 @@
+	-Wall -Wno-deprecated-declarations \
+	-o valkey-unit-gtests example_tests.o main.o test_acl_load_lifecycle.o test_acl_offload.o test_anet
+	-lrt -lm -pthread -ldl 

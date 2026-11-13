@@ -1,0 +1,41 @@
+[==========] 6 tests from 1 test suite ran. (11 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (8 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (8 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (8 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+[==========] 6 tests from 1 test suite ran. (7 ms total)
+[  PASSED  ] 6 tests.
+All UNIT TESTS PASSED!

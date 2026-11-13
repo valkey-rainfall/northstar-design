@@ -1,0 +1,13 @@
+diff --git a/src/fastpath.c b/src/fastpath.c
+index 44221b03b..3c41492df 100644
+--- a/src/fastpath.c
++++ b/src/fastpath.c
+@@ -562,7 +562,7 @@ static const char *fp_lane_commands[] = {
+     "zscan",
+     /* lists */
+     "lpush", "rpush", "lpushx", "rpushx", "linsert", "lset", "lrem", "ltrim", "lpop", "rpop", "lmpop",
+-    "lindex", "llen", "lrange", "lpos", "lmove", "rpoplpush", NULL};
++    "lindex", "llen", "lrange", "lpos", "lmove", "rpoplpush", "sort", NULL};
+ 
+ /* Unit tests: the lane allowlist (NULL-terminated) and the fast-path command gate, checked against the
+  * command table's key specs and flags. */

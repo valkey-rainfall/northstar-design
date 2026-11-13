@@ -1,0 +1,2 @@
+case merge: clients 8 rounds 300 ahead 0 differences 0; {'fastpath_batches': '1887', 'fastpath_clients': '9', 'fastpath_speculated': '0', 'fastpath_writes': '3270', 'staged_epoll_thread': '0', 'staged_iterations': '1057', 'staged_main_lane': '1', 'staged_reply_phases': '14'}
+NOTE: reply phases ran under staged-reply-merge (a hand-back, cron or tracking prefix forces them)

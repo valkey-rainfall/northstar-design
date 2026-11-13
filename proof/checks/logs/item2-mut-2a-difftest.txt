@@ -1,0 +1,1 @@
+difftest under m2a: exit 134 (abort at the first violating seed, before any reply difference); 'executors differ' lines: 0
